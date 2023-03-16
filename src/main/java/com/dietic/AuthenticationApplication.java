@@ -1,4 +1,4 @@
-package com.dietic.authentication;
+package com.dietic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
