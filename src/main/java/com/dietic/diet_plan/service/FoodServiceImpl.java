@@ -13,7 +13,10 @@ public class FoodServiceImpl implements FoodService {
     private final FoodRepository foodRepository;
     @Override
     public List<Food> searchFoods(String query) {
+        if (query.length() >= 3){
         List<Food> foods = foodRepository.searchFoods(query);
-        return foods;
+            return foods;
+        }
+        return null;
     }
 }
