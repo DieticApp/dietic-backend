@@ -19,6 +19,9 @@ public class Dietitian {
     private Integer dietitian_id;
     private String name;
     private String surname;
+    private String email;
     @OneToMany(mappedBy = "dietitian", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Patient> patients = new HashSet<>();
+    @OneToMany(mappedBy = "dietitian", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<DietPlan> dietPlans = new HashSet<>();
 }

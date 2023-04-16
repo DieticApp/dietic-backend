@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface PatientRepo extends JpaRepository<Patient , Integer> {
 
-    @Query( "SELECT e FROM Dietitian d join d.patients e WHERE d.id = :id")
+    @Query( "SELECT e FROM Dietitian d join d.patients e WHERE d.dietitian_id = :id")
     List<Patient> findPatientsByDietitianId(@Param("id") Integer id);
 
 }

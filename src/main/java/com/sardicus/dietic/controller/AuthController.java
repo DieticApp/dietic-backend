@@ -2,12 +2,18 @@ package com.sardicus.dietic.controller;
 
 import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.RegisterDto;
+import com.sardicus.dietic.entity.Dietitian;
+import com.sardicus.dietic.entity.Patient;
 import com.sardicus.dietic.entity.Role;
 import com.sardicus.dietic.entity.User;
+import com.sardicus.dietic.exception.APIException;
+import com.sardicus.dietic.repo.DietitianRepo;
+import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.repo.RoleRepo;
 import com.sardicus.dietic.repo.UserRepo;
 import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.security.JwtTokenProvider;
+import com.sardicus.dietic.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,56 +34,62 @@ import java.util.Collections;
 @RequiredArgsConstructor
 public class AuthController {
 
-
     private final AuthenticationManager authenticationManager;
-
-
     private final UserRepo userRepository;
-
-
+    private final DietitianRepo dietitianRepo;
+    private final PatientRepo patientRepo;
     private final RoleRepo roleRepository;
-
-
     private final PasswordEncoder passwordEncoder;
 
-
     private final JwtTokenProvider tokenProvider;
+    private final AuthService authService;
 
-    @PostMapping("/signin")
-    public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LoginDto loginDto){
+    @PostMapping("/login")
+    public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LoginDto loginDto ){
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(), loginDto.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // get token form tokenProvider
         String token = tokenProvider.generateToken(authentication);
 
         return ResponseEntity.ok(new JWTAuthResponse(token));
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterDto signUpDto){
-
-        if(userRepository.existsByEmail(signUpDto.getEmail())){
-            return new ResponseEntity<>("Email is already taken!", HttpStatus.BAD_REQUEST);
+    public ResponseEntity<?> registerUser(@RequestBody RegisterDto registerDto){
+        if(userRepository.existsByEmail(registerDto.getEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
         }
 
-        // create user object
         User user = new User();
-        user.setName(signUpDto.getName());
-        user.setEmail(signUpDto.getEmail());
-        user.setPassword(passwordEncoder.encode(signUpDto.getPassword()));
+        user.setName(registerDto.getName());
+        user.setSurname(registerDto.getSurname());
+        user.setEmail(registerDto.getEmail());
+        user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 
-        Role roles = roleRepository.findByName("ROLE_DIETITIAN").get();
-        user.setRoles(Collections.singleton(roles));
+        if (registerDto.getRoleName().equals("ROLE_DIETITIAN")) {
+            Dietitian dietitian = new Dietitian();
+            dietitian.setName(registerDto.getName());
+            dietitian.setSurname(registerDto.getSurname());
+            dietitian.setEmail(registerDto.getEmail());
+            dietitianRepo.save(dietitian);
 
+            Role roles = roleRepository.findByName("ROLE_DIETITIAN").get();
+            user.setRoles(Collections.singleton(roles));
+        }
+        else if (registerDto.getRoleName().equals("ROLE_PATIENT")) {
+            Patient patient = new Patient();
+            patient.setName(registerDto.getName());
+            patient.setSurname(registerDto.getSurname());
+            patient.setDietitian(dietitianRepo.getReferenceById(registerDto.getDietitianId()));
+            patientRepo.save(patient);
+
+            Role roles = roleRepository.findByName("ROLE_PATIENT").get();
+            user.setRoles(Collections.singleton(roles));
+        }
         userRepository.save(user);
 
-
-
-
-        return new ResponseEntity<>("User registered successfully ", HttpStatus.OK );
-
+        return new ResponseEntity<>("authService.register(registerDto)", HttpStatus.OK);
     }
 }

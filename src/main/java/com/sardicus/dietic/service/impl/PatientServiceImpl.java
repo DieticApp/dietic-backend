@@ -23,32 +23,26 @@ public class PatientServiceImpl implements PatientService {
     private final DietitianRepo dietitianRepo;
     private final ModelMapper mapper;
 
-    public PatientDto savePatient(int dietitianId , PatientDto patientDto){
-        Patient patient = mapToEntity(patientDto);
+
+
+    public PatientDto updatePatient(Integer dietitianId, int patientId, PatientDto patientRequest) {
 
         Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
-                () -> new ResourceNotFoundException("Company", "id", dietitianId));
-        patient.setDietitian(dietitian);
-        Patient newPatient =  patientRepo.save(patient);
-
-        return mapToDTO(newPatient);
-    }
-
-    public PatientDto updatePatient(Integer dietitianId, int patientId, PatientDto employeeRequest) {
-
-        Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
-                () -> new ResourceNotFoundException("Company", "id", dietitianId));
-
+                () -> new ResourceNotFoundException("Dietitian", "id:", dietitianId));
 
         Patient patient = patientRepo.findById(patientId).orElseThrow(() ->
-                new ResourceNotFoundException("Employee", "id", patientId));
+                new ResourceNotFoundException("Patient", "id:", patientId));
 
         if(!patient.getDietitian().getDietitian_id().equals(dietitian.getDietitian_id())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Comment does not belongs to post");
+            throw new APIException(HttpStatus.BAD_REQUEST, "Not working together");
         }
 
         patient.setName(patient.getName());
         patient.setSurname(patient.getSurname());
+        patient.setAge(patient.getAge());
+        patient.setHeight(patient.getHeight());
+        patient.setWeight(patient.getWeight());
+
 
         Patient updatedEmployee = patientRepo.save(patient);
         return mapToDTO(updatedEmployee);
@@ -70,9 +64,9 @@ public class PatientServiceImpl implements PatientService {
         patientRepo.delete(patient);
     }
    public List<PatientDto> getPatientsByDietitianId(Integer dietitianId) {
-        List<Patient> employees = patientRepo.findPatientsByDietitianId(dietitianId);
+        List<Patient> patients = patientRepo.findPatientsByDietitianId(dietitianId);
 
-        return employees.stream().map(this::mapToDTO).collect(Collectors.toList());
+        return patients.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
     public PatientDto getPatientById(Integer dietitianId, Integer patientId) {
