@@ -20,7 +20,7 @@ public class JwtTokenProvider {
     public String generateToken(Authentication authentication){
         String email = authentication.getName();
         Date currentDate = new Date();
-        Date expireDate = new Date(System.currentTimeMillis() + 1000 * 60 * 24);
+        Date expireDate = new Date(System.currentTimeMillis() + 1000 * 60 * 90);
 
         String token = Jwts.builder()
                 .setSubject(email)
