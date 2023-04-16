@@ -1,5 +1,7 @@
 package com.sardicus.dietic.dto;
 
+import java.util.Set;
+
 public class FoodDto {
     private Integer id;
     private String description;
@@ -7,5 +9,6 @@ public class FoodDto {
     private Integer fat;
     private Integer carb;
     private Integer energy;
+
 
 }
