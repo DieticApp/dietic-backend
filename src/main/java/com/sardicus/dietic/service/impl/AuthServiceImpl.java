@@ -11,18 +11,23 @@ import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.repo.RoleRepo;
 import com.sardicus.dietic.repo.UserRepo;
+import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.security.JwtTokenProvider;
 import com.sardicus.dietic.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -49,12 +54,15 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtTokenProvider.generateToken(authentication);
 
-        return token;
+        String role = userRepository.findByEmail(loginDto.getEmail()).get().getRoles().stream().toList().get(0).getName();
+        String name = userRepository.findByEmail(loginDto.getEmail()).get().getName();
+        String surname = userRepository.findByEmail(loginDto.getEmail()).get().getSurname();
+
+        return  role + "\n" + name + "\n" + surname + "\n" + token;
     }
 
 
     public String register(RegisterDto registerDto) {
-
 
         if(userRepository.existsByEmail(registerDto.getEmail())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
@@ -70,6 +78,7 @@ public class AuthServiceImpl implements AuthService {
             Dietitian dietitian = new Dietitian();
             dietitian.setName(registerDto.getName());
             dietitian.setSurname(registerDto.getSurname());
+            dietitian.setEmail(registerDto.getEmail());
             dietitianRepo.save(dietitian);
 
             Role roles = roleRepository.findByName("ROLE_DIETITIAN").get();
@@ -87,7 +96,13 @@ public class AuthServiceImpl implements AuthService {
         }
         userRepository.save(user);
 
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                registerDto.getEmail(), registerDto.getPassword()));
 
-        return "User registered successfully!.";
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return   registerDto.getRoleName() + "\n" + registerDto.getName() + "\n" + registerDto.getSurname() + "\n" + token;
     }
 }

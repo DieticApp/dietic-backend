@@ -16,25 +16,20 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/dietitians/patients")
 @RequiredArgsConstructor
 public class PatientController {
     private final DietitianRepo dietitianRepo;
     private final PatientService patientService;
     private final FoodService foodService;
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Food>> searchFoods(@RequestParam("query") String query){
-        return ResponseEntity.ok(foodService.searchFoods(query));
-    }
 
-
-    @GetMapping("/dietitians/patients")
+    @GetMapping()
     public List<PatientDto> getPatientsByDietitianId(@AuthenticationPrincipal UserDetails dietitian){
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
         return patientService.getPatientsByDietitianId(dietitianId);
     }
-    @GetMapping("/dietitians/patients/{patientId}")
+    @GetMapping("/{patientId}")
     public ResponseEntity<PatientDto> getPatientById(@AuthenticationPrincipal UserDetails dietitian,
                                                      @PathVariable(value = "patientId") Integer patientId){
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
@@ -42,7 +37,7 @@ public class PatientController {
         return new ResponseEntity<>(patient , HttpStatus.OK);
     }
 
-    @PutMapping("/dietitians/patients/{patientId}")
+    @PutMapping("/{patientId}")
     public ResponseEntity<PatientDto> updatePatient(@AuthenticationPrincipal UserDetails dietitian,
                                                     @PathVariable(value = "patientId") Integer patientId,
                                                     @RequestBody PatientDto patientDto){
@@ -51,7 +46,7 @@ public class PatientController {
         return new ResponseEntity<>(updatedPatient, HttpStatus.OK);
     }
 
-    @DeleteMapping("/dietitians/patients/delete/{patientId}")
+    @DeleteMapping("/delete/{patientId}")
     public ResponseEntity<String> deletePatient(@AuthenticationPrincipal UserDetails dietitian,
                                                 @PathVariable(value = "patientId") Integer patientId){
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();

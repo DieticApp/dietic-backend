@@ -15,21 +15,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/dietPlans")
 @RequiredArgsConstructor
 public class DietPlanController {
     private final DietPlanService dietPlanService;
 
 
 
-    @PostMapping("/dietPlans/{dietitianId}/{patientId}/{foodId}")
+    @PostMapping("/{dietitianId}/{patientId}/{foodId}")
     public ResponseEntity<DietPlanDto> saveFood(@PathVariable(value = "dietitianId")int dietitianId ,
                                                 @PathVariable(value = "patientId") int patientId  ,
                                                 @PathVariable(value = "foodId")int foodId,
                                                     @RequestBody DietPlanDto dietPlanDto){
         return new ResponseEntity<>(dietPlanService.saveFood(dietitianId,patientId,foodId , dietPlanDto), HttpStatus.CREATED);
     }
-    @GetMapping("/dietPlans/{dietitianId}/{patientId}")
+    @GetMapping("/{dietitianId}/{patientId}")
     public List<DietPlanDto> getPlanByPatientId(@PathVariable(value = "dietitianId")int dietitianId,
                                                @PathVariable(value = "patientId") int patientId){
         return dietPlanService.getPlanByPatientId(patientId);

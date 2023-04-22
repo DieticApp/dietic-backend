@@ -13,6 +13,7 @@ public class DietPlanDto {
     private Integer day;
     private Integer meal;
    private Integer food_id;
+   private String food_name;
 
 
 }

@@ -57,7 +57,6 @@ public class DietPlanServiceImpl implements DietPlanService {
     @Override
     public List<DietPlanDto> getPlanByPatientId(Integer patientId) {
         List<DietPlan> dietPlans = dietPlanRepo.findDietPlansByPatientId(patientId);
-
         return dietPlans.stream().map(this::mapToDTO).collect(Collectors.toList());
 
     }
@@ -88,6 +87,7 @@ public class DietPlanServiceImpl implements DietPlanService {
     }
     private DietPlanDto mapToDTO(DietPlan dietPlan){
         DietPlanDto dietPlanDto = mapper.map(dietPlan, DietPlanDto.class);
+        dietPlanDto.setFood_name(foodRepo.findById(dietPlanDto.getFood_id()).get().getDescription());
         return dietPlanDto;
     }
 
