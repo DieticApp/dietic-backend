@@ -46,9 +46,9 @@ public class AppointmentController {
 
 
     @PatchMapping(path = "/updateStatus/{appointmentId}")
-    @ResponseStatus(HttpStatus.OK)
-    public AppointmentDto updateStatusOfAppointment(@PathVariable Long appointmentId, @RequestBody AppointmentDto appointment) {
-        return appointmentService.updateStatusOfAppointment(appointmentId, appointment);
+    public ResponseEntity<AppointmentDto> updateStatusOfAppointment(@PathVariable Long appointmentId, @RequestBody AppointmentDto appointment) {
+        AppointmentDto updatedAppointment = appointmentService.updateStatusOfAppointment(appointmentId, appointment);
+        return new ResponseEntity<>(updatedAppointment, HttpStatus.OK);
     }
 
     /** DELETE request to delete specific appointments **/

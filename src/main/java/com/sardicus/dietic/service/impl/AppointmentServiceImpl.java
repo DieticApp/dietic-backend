@@ -3,20 +3,16 @@ package com.sardicus.dietic.service.impl;
 
 import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.entity.Appointment;
-import com.sardicus.dietic.entity.DietPlan;
+import com.sardicus.dietic.entity.AppointmentStatus;
 import com.sardicus.dietic.entity.Dietitian;
 import com.sardicus.dietic.entity.Patient;
-import com.sardicus.dietic.exception.APIException;
 import com.sardicus.dietic.exception.ResourceNotFoundException;
-
-
 import com.sardicus.dietic.repo.AppointmentRepo;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +41,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<AppointmentDto> getAppointmentsByDietitianId(Integer dietitianId) {
         Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
                 () -> new ResourceNotFoundException("Dietitian", "id", dietitianId));
-        List<Appointment> appointments = appointmentRepo.findAppointmentsByDietitian(dietitian);
+        AppointmentStatus status = AppointmentStatus.BOOKED;
+        List<Appointment> appointments = appointmentRepo.findAppointmentsByStatusAndDietitian(status,dietitian);
 
         return appointments.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
@@ -82,12 +79,13 @@ public class AppointmentServiceImpl implements AppointmentService {
         Appointment appointment = appointmentRepo.findById(appointmentId).orElseThrow(() ->
                 new ResourceNotFoundException("Appointment", "id:", appointmentId));
 
+        Patient patient = patientRepo.findById(appointmentRequest.getPatient_id()).orElseThrow(() ->
+                new ResourceNotFoundException("Patient", "id:", appointmentRequest.getPatient_id()));
 
-
-        appointment.setAppointmentDate(appointment.getAppointmentDate());
-        appointment.setAppointmentTime(appointment.getAppointmentTime());
-        appointment.setStatus(appointment.getStatus());
-        appointment.setPatient(appointment.getPatient());
+        appointment.setAppointmentDate(appointmentRequest.getAppointmentDate());
+        appointment.setAppointmentTime(appointmentRequest.getAppointmentTime());
+        appointment.setStatus(appointmentRequest.getStatus());
+        appointment.setPatient(patient);
 
 
 
@@ -97,17 +95,15 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentDto updateStatusOfAppointment(Long appointmentId, AppointmentDto appointment) {
-        Optional<Appointment> appointmentList = appointmentRepo.findById(appointmentId);
+    public AppointmentDto updateStatusOfAppointment(Long appointmentId, AppointmentDto appointmentDto) {
+        Appointment appointment = appointmentRepo.findById(appointmentId).orElseThrow(() ->
+                new ResourceNotFoundException("Appointment", "id:", appointmentId));
 
-        if(appointmentList.isPresent()){
-            if(appointment.getStatus() != null){
-                appointmentList.get().setStatus(appointment.getStatus());
-            }
-            Appointment updatedAppointment = appointmentRepo.save(appointmentList.get());
-            return mapToDTO(updatedAppointment);
-        }
-        return null;
+        appointment.setStatus(appointmentDto.getStatus());
+
+
+        Appointment updatedAppointment = appointmentRepo.save(appointment);
+        return mapToDTO(updatedAppointment);
     }
 
     @Override

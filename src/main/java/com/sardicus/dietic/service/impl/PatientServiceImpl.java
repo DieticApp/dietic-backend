@@ -37,11 +37,11 @@ public class PatientServiceImpl implements PatientService {
             throw new APIException(HttpStatus.BAD_REQUEST, "Not working together");
         }
 
-        patient.setName(patient.getName());
-        patient.setSurname(patient.getSurname());
-        patient.setAge(patient.getAge());
-        patient.setHeight(patient.getHeight());
-        patient.setWeight(patient.getWeight());
+        patient.setName(patientRequest.getName());
+        patient.setSurname(patientRequest.getSurname());
+        patient.setAge(patientRequest.getAge());
+        patient.setHeight(patientRequest.getHeight());
+        patient.setWeight(patientRequest.getWeight());
 
 
         Patient updatedEmployee = patientRepo.save(patient);

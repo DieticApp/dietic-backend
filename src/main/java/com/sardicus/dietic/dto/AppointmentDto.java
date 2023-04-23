@@ -11,10 +11,12 @@ import java.util.Set;
 @Data
 public class AppointmentDto {
     private Long appointment_id;
-    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-    private LocalDate appointmentDate;
-    private Time appointmentTime;
+    private AppointmentStatus status = AppointmentStatus.BOOKED;
     private Integer dietitian_id;
     private Integer patient_id;
-    private AppointmentStatus status = AppointmentStatus.BOOKED;
+    private LocalDate appointmentDate;
+    private Time appointmentTime;
+    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+
 }
