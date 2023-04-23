@@ -14,6 +14,10 @@ public class DietPlanDto {
     private Integer meal;
    private Integer food_id;
    private String food_name;
+   private Double carb;
+   private Double protein;
+   private Double fat;
+   private Integer energy;
 
 
 }

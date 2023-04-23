@@ -88,6 +88,10 @@ public class DietPlanServiceImpl implements DietPlanService {
     private DietPlanDto mapToDTO(DietPlan dietPlan){
         DietPlanDto dietPlanDto = mapper.map(dietPlan, DietPlanDto.class);
         dietPlanDto.setFood_name(foodRepo.findById(dietPlanDto.getFood_id()).get().getDescription());
+        dietPlanDto.setFat(foodRepo.findById(dietPlanDto.getFood_id()).get().getFat());
+        dietPlanDto.setCarb(foodRepo.findById(dietPlanDto.getFood_id()).get().getCarb());
+        dietPlanDto.setProtein(foodRepo.findById(dietPlanDto.getFood_id()).get().getProtein());
+        dietPlanDto.setEnergy(foodRepo.findById(dietPlanDto.getFood_id()).get().getEnergy());
         return dietPlanDto;
     }
 

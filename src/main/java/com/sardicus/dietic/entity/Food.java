@@ -21,11 +21,11 @@ public class Food {
     @Column(name = "description")
     private String description;
     @Column(name = "Protein" , columnDefinition="Decimal(4,2))")
-    private Integer protein;
+    private Double protein;
     @Column(name = "Fat" , columnDefinition="Decimal(5,2))")
-    private Integer fat;
+    private Double fat;
     @Column(name = "Carbohydrate" , columnDefinition="Decimal(4,2))")
-    private Integer carb;
+    private Double carb;
     @Column(name = "Energy")
     private Integer energy;
 
