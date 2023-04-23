@@ -12,5 +12,4 @@ public interface FoodRepo extends JpaRepository<Food, Integer> {
     @Query("SELECT p from Food p where" +
             " p.description LIKE CONCAT('%',:query, '%')")
     List<Food> searchFoods(String query);
-
 }

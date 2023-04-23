@@ -1,11 +1,6 @@
 package com.sardicus.dietic.dto;
 
-import com.sardicus.dietic.entity.Dietitian;
-import com.sardicus.dietic.entity.Food;
-import com.sardicus.dietic.entity.Patient;
 import lombok.Data;
-
-import java.util.Set;
 @Data
 public class DietPlanDto {
 
