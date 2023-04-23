@@ -10,6 +10,10 @@ public class PatientDto {
     private Integer patient_id;
     private String name;
     private String surname;
+    private Integer age;
+    private Integer height;
+    private Integer weight;
+    private Integer bodyFat;
     private Set<DietPlanDto> dietPlans;
 
 }

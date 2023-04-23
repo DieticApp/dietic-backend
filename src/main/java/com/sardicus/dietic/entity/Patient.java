@@ -27,5 +27,7 @@ public class Patient {
     private Integer age;
     private Integer height;
     private Integer weight;
+    private Integer bodyFat;
+
 
 }
