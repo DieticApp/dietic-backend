@@ -34,5 +34,15 @@ public class DietPlanController {
                                                @PathVariable(value = "patientId") int patientId){
         return dietPlanService.getPlanByPatientId(patientId);
     }
-
+    @GetMapping("patient/{patientId}/day/{day}")
+    public List<DietPlanDto> getPlanByDay(@PathVariable(value = "patientId")int patientId,
+                                                @PathVariable(value = "day") int day){
+        return dietPlanService.getPlanByDay(day , patientId);
+    }
+    @GetMapping("patient/{patientId}/day/{day}/meal/{meal}")
+    public List<DietPlanDto> getPlansByDayAndMeal(@PathVariable(value = "patientId")int patientId,
+                                          @PathVariable(value = "day") int day,
+                                                 @PathVariable(value = "meal") int meal){
+        return dietPlanService.getByMeal(patientId,day,meal);
+    }
 }

@@ -12,6 +12,6 @@ public interface DietPlanService {
     void deletePlanByMeal(Integer patientId ,Integer dayId , Integer mealId);
 
     List<DietPlanDto> getPlanByDay(Integer day , Integer patientId);
-    DietPlanDto getByMeal(Integer patientId , Integer day , Integer meal);
+    List<DietPlanDto> getByMeal(Integer patientId , Integer day , Integer meal);
 
 }

@@ -82,8 +82,12 @@ public class DietPlanServiceImpl implements DietPlanService {
     }
 
     @Override
-    public DietPlanDto getByMeal(Integer patientId, Integer day, Integer meal) {
-        return null;
+    public List<DietPlanDto> getByMeal(Integer patientId, Integer day, Integer meal) {
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                () -> new ResourceNotFoundException("Patient", "id", patientId));
+        List<DietPlan> dietPlans = dietPlanRepo.findDietPlansByPatientAndDayAndMeal(patient , day , meal);
+
+        return dietPlans.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
     private DietPlanDto mapToDTO(DietPlan dietPlan){
         DietPlanDto dietPlanDto = mapper.map(dietPlan, DietPlanDto.class);
