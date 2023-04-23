@@ -37,7 +37,6 @@ import java.util.stream.Collectors;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
-    private final ModelMapper mapper;
     private final UserRepo userRepository;
     private final DietitianRepo dietitianRepo;
     private final PatientRepo patientRepo;

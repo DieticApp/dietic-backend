@@ -27,7 +27,6 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<JWTAuthResponse> registerUser(@RequestBody RegisterDto registerDto){
-      authService.register(registerDto);
         return new ResponseEntity<>(  authService.register(registerDto), HttpStatus.CREATED);
     }
 }
