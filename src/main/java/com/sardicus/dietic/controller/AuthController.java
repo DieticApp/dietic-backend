@@ -2,6 +2,7 @@ package com.sardicus.dietic.controller;
 
 import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.RegisterDto;
+import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,13 +21,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@RequestBody LoginDto loginDto ){
-       authService.login(loginDto);
-        return ResponseEntity.ok(authService.login(loginDto));
+    public ResponseEntity<JWTAuthResponse> authenticateUser(@RequestBody LoginDto loginDto ){
+        return new ResponseEntity<>( authService.login(loginDto) , HttpStatus.OK);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterDto registerDto){
-        return new ResponseEntity<>( authService.register(registerDto) , HttpStatus.OK);
+    public ResponseEntity<JWTAuthResponse> registerUser(@RequestBody RegisterDto registerDto){
+      authService.register(registerDto);
+        return new ResponseEntity<>(  authService.register(registerDto), HttpStatus.CREATED);
     }
 }

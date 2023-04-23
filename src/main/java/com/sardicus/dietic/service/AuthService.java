@@ -3,9 +3,10 @@ package com.sardicus.dietic.service;
 
 import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.RegisterDto;
+import com.sardicus.dietic.response.JWTAuthResponse;
 
 public interface AuthService {
-    String login(LoginDto loginDto);
+    JWTAuthResponse login(LoginDto loginDto);
 
-    String register(RegisterDto registerDto);
+    JWTAuthResponse register(RegisterDto registerDto);
 }

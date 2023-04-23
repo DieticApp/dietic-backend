@@ -1,5 +1,6 @@
 package com.sardicus.dietic.service.impl;
 
+import com.sardicus.dietic.dto.DietitianDto;
 import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.RegisterDto;
 import com.sardicus.dietic.entity.Dietitian;
@@ -15,6 +16,7 @@ import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.security.JwtTokenProvider;
 import com.sardicus.dietic.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final ModelMapper mapper;
     private final UserRepo userRepository;
     private final DietitianRepo dietitianRepo;
     private final PatientRepo patientRepo;
@@ -45,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public String login(LoginDto loginDto) {
+    public JWTAuthResponse login(LoginDto loginDto) {
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(), loginDto.getPassword()));
@@ -58,14 +61,21 @@ public class AuthServiceImpl implements AuthService {
         String name = userRepository.findByEmail(loginDto.getEmail()).get().getName();
         String surname = userRepository.findByEmail(loginDto.getEmail()).get().getSurname();
 
-        return  role + "\n" + name + "\n" + surname + "\n" + token;
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+        jwtAuthResponse.setName(name);
+        jwtAuthResponse.setSurname(surname);
+        jwtAuthResponse.setRoleName(role);
+
+        return  jwtAuthResponse;
     }
 
 
-    public String register(RegisterDto registerDto) {
+
+    public JWTAuthResponse register(RegisterDto registerDto) {
 
         if(userRepository.existsByEmail(registerDto.getEmail())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Email is already exists!.");
+            throw new APIException(HttpStatus.BAD_REQUEST, "Email already exists!.");
         }
 
         User user = new User();
@@ -103,6 +113,17 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtTokenProvider.generateToken(authentication);
 
-        return   registerDto.getRoleName() + "\n" + registerDto.getName() + "\n" + registerDto.getSurname() + "\n" + token;
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+        jwtAuthResponse.setAccessToken(token);
+        jwtAuthResponse.setName(registerDto.getName());
+        jwtAuthResponse.setSurname(registerDto.getSurname());
+        jwtAuthResponse.setRoleName(registerDto.getRoleName());
+
+
+
+        return jwtAuthResponse;
     }
+
+
+
 }
