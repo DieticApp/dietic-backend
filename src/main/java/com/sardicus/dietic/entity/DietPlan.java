@@ -26,5 +26,7 @@ public class DietPlan {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
+    private String details;
+    private DietPlanStatus eaten = DietPlanStatus.UNCHECKED;
 
 }

@@ -31,7 +31,7 @@ public class AppointmentController {
     }
 
 
-    @PostMapping("/{dietitianId}/{patientId}")
+    @PostMapping("/book/{dietitianId}/{patientId}")
     public ResponseEntity<AppointmentDto> bookAppointment(@PathVariable Integer dietitianId , @PathVariable Integer patientId , @RequestBody AppointmentDto appointment) {
         return new ResponseEntity<>(appointmentService.bookAppointment(dietitianId , patientId ,appointment), HttpStatus.CREATED);
     }

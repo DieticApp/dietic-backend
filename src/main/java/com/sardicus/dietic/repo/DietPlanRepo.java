@@ -15,4 +15,5 @@ public interface DietPlanRepo extends JpaRepository<DietPlan, Integer> {
 
     List<DietPlan> findDietPlansByDayAndPatient(Integer day , Patient patient );
     List<DietPlan> findDietPlansByPatientAndDayAndMeal(Patient patient , Integer day , Integer meal);
+
 }

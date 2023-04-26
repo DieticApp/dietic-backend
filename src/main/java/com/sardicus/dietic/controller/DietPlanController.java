@@ -1,5 +1,6 @@
 package com.sardicus.dietic.controller;
 
+import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.dto.DietPlanDto;
 import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.repo.PatientRepo;
@@ -44,5 +45,10 @@ public class DietPlanController {
                                           @PathVariable(value = "day") int day,
                                                  @PathVariable(value = "meal") int meal){
         return dietPlanService.getByMeal(patientId,day,meal);
+    }
+    @PatchMapping(path = "/updateEaten/{planId}")
+    public ResponseEntity<DietPlanDto> updateStatusOfDietPlan(@PathVariable Integer planId, @RequestBody DietPlanDto dietPlan) {
+        DietPlanDto updatedDietPlan = dietPlanService.updateStatusOfFood(planId, dietPlan);
+        return new ResponseEntity<>(updatedDietPlan, HttpStatus.OK);
     }
 }

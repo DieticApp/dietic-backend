@@ -1,5 +1,6 @@
 package com.sardicus.dietic.dto;
 
+import com.sardicus.dietic.entity.DietPlanStatus;
 import lombok.Data;
 @Data
 public class DietPlanDto {
@@ -13,6 +14,7 @@ public class DietPlanDto {
    private Double protein;
    private Double fat;
    private Integer energy;
-
+    private String details;
+    private DietPlanStatus eaten = DietPlanStatus.UNCHECKED;
 
 }

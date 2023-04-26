@@ -1,10 +1,7 @@
 package com.sardicus.dietic.service.impl;
 
 import com.sardicus.dietic.dto.DietPlanDto;
-import com.sardicus.dietic.entity.DietPlan;
-import com.sardicus.dietic.entity.Dietitian;
-import com.sardicus.dietic.entity.Food;
-import com.sardicus.dietic.entity.Patient;
+import com.sardicus.dietic.entity.*;
 import com.sardicus.dietic.exception.ResourceNotFoundException;
 import com.sardicus.dietic.repo.DietPlanRepo;
 import com.sardicus.dietic.repo.DietitianRepo;
@@ -70,6 +67,18 @@ public class DietPlanServiceImpl implements DietPlanService {
     @Override
     public void deleteFood(Integer dietitianId ,Integer patientId, Integer day, Integer meal , Integer food) {
 
+    }
+
+    @Override
+    public DietPlanDto updateStatusOfFood(Integer planId, DietPlanDto dietPlanDto) {
+        DietPlan dietPlan = dietPlanRepo.findById(planId).orElseThrow(() ->
+                new ResourceNotFoundException("Plan", "id:", planId));
+
+        dietPlan.setEaten(dietPlanDto.getEaten());
+
+
+        DietPlan updatedPlan = dietPlanRepo.save(dietPlan);
+        return mapToDTO(updatedPlan);
     }
 
     @Override
