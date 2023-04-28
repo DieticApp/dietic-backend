@@ -3,6 +3,7 @@ package com.sardicus.dietic.controller;
 import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.entity.Food;
 import com.sardicus.dietic.repo.DietitianRepo;
+import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.security.CustomUserDetailsService;
 import com.sardicus.dietic.service.FoodService;
 import com.sardicus.dietic.service.PatientService;
@@ -20,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PatientController {
     private final DietitianRepo dietitianRepo;
+    private final PatientRepo patientRepo;
     private final PatientService patientService;
     private final FoodService foodService;
 
@@ -29,12 +31,10 @@ public class PatientController {
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
         return patientService.getPatientsByDietitianId(dietitianId);
     }
-    @GetMapping("/{patientId}")
-    public ResponseEntity<PatientDto> getPatientById(@AuthenticationPrincipal UserDetails dietitian,
-                                                     @PathVariable(value = "patientId") Integer patientId){
-        Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
-        PatientDto patient = patientService.getPatientById(dietitianId, patientId);
-        return new ResponseEntity<>(patient , HttpStatus.OK);
+    @GetMapping("/details")
+    public ResponseEntity<PatientDto> getPatientDetails(@AuthenticationPrincipal UserDetails patient){
+        Integer patientId = patientRepo.findByEmail(patient.getUsername()).get().getPatient_id();
+        return new ResponseEntity<>(patientService.getPatientById(patientId) , HttpStatus.OK);
     }
 
     @PutMapping("/{patientId}")

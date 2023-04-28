@@ -8,12 +8,13 @@ import java.util.Set;
 public class PatientDto {
 
     private Integer patient_id;
+    private Integer dietitian_id;
+    private String email;
     private String name;
     private String surname;
     private Integer age;
     private Integer height;
     private Integer weight;
     private Integer bodyFat;
-    private Set<DietPlanDto> dietPlans;
 
 }

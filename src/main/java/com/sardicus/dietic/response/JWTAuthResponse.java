@@ -10,11 +10,14 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JWTAuthResponse {
+
     private String roleName;
+    private String email;
     private String  name;
     private String surname;
     private String accessToken;
     private String tokenType = "Bearer";
+
 
 
 }

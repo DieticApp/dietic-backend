@@ -17,6 +17,7 @@ public class Patient {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer patient_id;
+    private String email;
     private String name;
     private String surname;
     @ManyToOne(fetch = FetchType.LAZY)

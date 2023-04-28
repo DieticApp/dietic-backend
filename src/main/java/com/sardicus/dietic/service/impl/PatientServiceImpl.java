@@ -69,18 +69,11 @@ public class PatientServiceImpl implements PatientService {
         return patients.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 
-    public PatientDto getPatientById(Integer dietitianId, Integer patientId) {
-
-        Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
-                () -> new ResourceNotFoundException("Company", "id", dietitianId));
-
+    public PatientDto getPatientById(Integer patientId) {
 
         Patient patient = patientRepo.findById(patientId).orElseThrow(() ->
                 new ResourceNotFoundException("Employee", "id", patientId));
 
-        if(!patient.getDietitian().getDietitian_id().equals(dietitian.getDietitian_id())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Comment does not belongs to post");
-        }
 
         return mapToDTO(patient);
     }

@@ -10,6 +10,6 @@ public interface PatientService {
 
      void deletePatient(int dietitianId , int patientId);
      List<PatientDto> getPatientsByDietitianId(Integer dietitianId);
-     PatientDto getPatientById(Integer dietitianId , Integer patientId);
+     PatientDto getPatientById(Integer patientId);
      PatientDto updatePatient(Integer dietitianId, int patientId, PatientDto employeeRequest);
 }

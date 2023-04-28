@@ -1,6 +1,5 @@
 package com.sardicus.dietic.service.impl;
 
-import com.sardicus.dietic.dto.DietitianDto;
 import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.RegisterDto;
 import com.sardicus.dietic.entity.Dietitian;
@@ -16,20 +15,15 @@ import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.security.JwtTokenProvider;
 import com.sardicus.dietic.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -60,11 +54,13 @@ public class AuthServiceImpl implements AuthService {
         String name = userRepository.findByEmail(loginDto.getEmail()).get().getName();
         String surname = userRepository.findByEmail(loginDto.getEmail()).get().getSurname();
 
+
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
         jwtAuthResponse.setAccessToken(token);
         jwtAuthResponse.setName(name);
         jwtAuthResponse.setSurname(surname);
         jwtAuthResponse.setRoleName(role);
+        jwtAuthResponse.setEmail(loginDto.getEmail());
 
         return  jwtAuthResponse;
     }
@@ -98,8 +94,8 @@ public class AuthServiceImpl implements AuthService {
             patient.setName(registerDto.getName());
             patient.setSurname(registerDto.getSurname());
             patient.setDietitian(dietitianRepo.getReferenceById(registerDto.getDietitianId()));
+            patient.setEmail(registerDto.getEmail());
             patientRepo.save(patient);
-
             Role roles = roleRepository.findByName("ROLE_PATIENT").get();
             user.setRoles(Collections.singleton(roles));
         }
@@ -117,7 +113,7 @@ public class AuthServiceImpl implements AuthService {
         jwtAuthResponse.setName(registerDto.getName());
         jwtAuthResponse.setSurname(registerDto.getSurname());
         jwtAuthResponse.setRoleName(registerDto.getRoleName());
-
+        jwtAuthResponse.setEmail(registerDto.getEmail());
 
 
         return jwtAuthResponse;
