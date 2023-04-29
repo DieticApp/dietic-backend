@@ -31,7 +31,7 @@ public class AppointmentController {
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
         return appointmentService.getAppointmentsByDietitianId(dietitianId);
     }
-    @GetMapping("/dietitian/byDate/{dietitianId}")
+    @PostMapping("/dietitian/byDate/{dietitianId}")
     List<AppointmentDto> getAppointmentsByDietitianIdAndDate(@PathVariable Integer dietitianId ,@RequestBody AppointmentDto appointmentDto ) {
         LocalDate date = appointmentDto.getAppointmentDate();
         return appointmentService.getAppointmentsByDietitianIdAndDate(dietitianId , date);
