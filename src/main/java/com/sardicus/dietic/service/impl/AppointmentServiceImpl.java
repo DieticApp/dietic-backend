@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +45,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         AppointmentStatus status = AppointmentStatus.BOOKED;
         List<Appointment> appointments = appointmentRepo.findAppointmentsByStatusAndDietitian(status,dietitian);
 
+        return appointments.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<AppointmentDto> getAppointmentsByDietitianIdAndDate(Integer dietitianId , LocalDate date) {
+        Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
+                () -> new ResourceNotFoundException("Dietitian", "id", dietitianId));
+        AppointmentStatus status = AppointmentStatus.BOOKED;
+        List<Appointment> appointments = appointmentRepo.findAppointmentsByStatusAndDietitianAndAppointmentDate(status,dietitian,date);
         return appointments.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
 

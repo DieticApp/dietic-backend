@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +25,11 @@ public class AppointmentController {
     @GetMapping("/dietitian/{dietitianId}")
     List<AppointmentDto> getAppointmentsByDietitianId(@PathVariable Integer dietitianId) {
         return appointmentService.getAppointmentsByDietitianId(dietitianId);
+    }
+    @GetMapping("/dietitian/byDate/{dietitianId}")
+    List<AppointmentDto> getAppointmentsByDietitianIdAndDate(@PathVariable Integer dietitianId ,@RequestBody AppointmentDto appointmentDto ) {
+        LocalDate date = appointmentDto.getAppointmentDate();
+        return appointmentService.getAppointmentsByDietitianIdAndDate(dietitianId , date);
     }
     @GetMapping("/patient/{patientId}")
     List<AppointmentDto> getAppointmentsByPatientId(@PathVariable Integer patientId) {

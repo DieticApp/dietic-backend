@@ -11,6 +11,7 @@ public interface AppointmentService {
     AppointmentDto getAppointmentById(Long appointmentId);
 
     List<AppointmentDto> getAppointmentsByDietitianId(Integer dietitianId);
+    List<AppointmentDto> getAppointmentsByDietitianIdAndDate(Integer dietitianId , LocalDate date);
 
     List<AppointmentDto> getAppointmentsByPatientId(Integer dietitianId);
 
