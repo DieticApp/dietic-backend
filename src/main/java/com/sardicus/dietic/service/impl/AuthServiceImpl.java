@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Objects;
 
 
 @Service
@@ -61,13 +62,18 @@ public class AuthServiceImpl implements AuthService {
         jwtAuthResponse.setSurname(surname);
         jwtAuthResponse.setRoleName(role);
         jwtAuthResponse.setEmail(loginDto.getEmail());
-
+        if (role.equals("ROLE_DIETITIAN")) jwtAuthResponse.setId(dietitianRepo.findByEmail(loginDto.getEmail()).get().getDietitian_id());
+        else if(role.equals("ROLE_PATIENT")) {
+            jwtAuthResponse.setId(patientRepo.findByEmail(loginDto.getEmail()).get().getPatient_id());
+            jwtAuthResponse.setDietitianId(patientRepo.findByEmail(loginDto.getEmail()).get().getDietitian().getDietitian_id());
+        }
         return  jwtAuthResponse;
     }
 
 
 
     public JWTAuthResponse register(RegisterDto registerDto) {
+        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
 
         if(userRepository.existsByEmail(registerDto.getEmail())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Email already exists!.");
@@ -88,6 +94,8 @@ public class AuthServiceImpl implements AuthService {
 
             Role roles = roleRepository.findByName("ROLE_DIETITIAN").get();
             user.setRoles(Collections.singleton(roles));
+
+            jwtAuthResponse.setId(dietitian.getDietitian_id());
         }
         else if (registerDto.getRoleName().equals("ROLE_PATIENT")) {
             Patient patient = new Patient();
@@ -98,6 +106,9 @@ public class AuthServiceImpl implements AuthService {
             patientRepo.save(patient);
             Role roles = roleRepository.findByName("ROLE_PATIENT").get();
             user.setRoles(Collections.singleton(roles));
+
+            jwtAuthResponse.setId(patient.getPatient_id());
+            jwtAuthResponse.setDietitianId(patient.getDietitian().getDietitian_id());
         }
         userRepository.save(user);
 
@@ -108,7 +119,7 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtTokenProvider.generateToken(authentication);
 
-        JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
+
         jwtAuthResponse.setAccessToken(token);
         jwtAuthResponse.setName(registerDto.getName());
         jwtAuthResponse.setSurname(registerDto.getSurname());
