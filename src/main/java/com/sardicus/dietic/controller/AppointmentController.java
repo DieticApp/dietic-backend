@@ -1,10 +1,13 @@
 package com.sardicus.dietic.controller;
 
 import com.sardicus.dietic.dto.AppointmentDto;
+import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -17,13 +20,15 @@ import java.util.Optional;
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
+    private final DietitianRepo dietitianRepo;
 
     @GetMapping("/appointment/{appointmentId}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long appointmentId) {
         return new ResponseEntity<>(appointmentService.getAppointmentById(appointmentId) , HttpStatus.OK);
     }
-    @GetMapping("/dietitian/{dietitianId}")
-    List<AppointmentDto> getAppointmentsByDietitianId(@PathVariable Integer dietitianId) {
+    @GetMapping("/dietitian")
+    List<AppointmentDto> getAppointmentsByDietitianId(@AuthenticationPrincipal UserDetails dietitian) {
+        Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
         return appointmentService.getAppointmentsByDietitianId(dietitianId);
     }
     @GetMapping("/dietitian/byDate/{dietitianId}")
