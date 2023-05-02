@@ -21,6 +21,8 @@ public class JWTAuthResponse {
     private String surname;
     private String accessToken;
     private String tokenType = "Bearer";
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String firebaseResponse;
 
 
 

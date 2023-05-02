@@ -1,7 +1,9 @@
 package com.sardicus.dietic.service.impl;
 
 import com.sardicus.dietic.dto.LoginDto;
+import com.sardicus.dietic.dto.MessageDto;
 import com.sardicus.dietic.dto.RegisterDto;
+import com.sardicus.dietic.dto.RoomDto;
 import com.sardicus.dietic.entity.Dietitian;
 import com.sardicus.dietic.entity.Patient;
 import com.sardicus.dietic.entity.Role;
@@ -23,8 +25,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Objects;
+import java.util.concurrent.ExecutionException;
 
 
 @Service
@@ -32,6 +35,7 @@ import java.util.Objects;
 public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
+    private final MessageService messageService;
     private final UserRepo userRepository;
     private final DietitianRepo dietitianRepo;
     private final PatientRepo patientRepo;
@@ -72,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
 
 
 
-    public JWTAuthResponse register(RegisterDto registerDto) {
+    public JWTAuthResponse register(RegisterDto registerDto) throws ExecutionException, InterruptedException {
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
 
         if(userRepository.existsByEmail(registerDto.getEmail())){
@@ -107,6 +111,24 @@ public class AuthServiceImpl implements AuthService {
             Role roles = roleRepository.findByName("ROLE_PATIENT").get();
             user.setRoles(Collections.singleton(roles));
 
+            RoomDto roomDto = new RoomDto();
+            ArrayList<String> users = new ArrayList<>();
+            users.add(patient.getEmail());
+            users.add(patient.getDietitian().getEmail());
+            roomDto.setUsers(users);
+
+            String message = "Hello, How can i help you?";
+            roomDto.setLast_message(message);
+
+
+            MessageDto messageDto = new MessageDto();
+            messageDto.setMessage(message);
+            messageDto.setSent_by(patient.getDietitian().getEmail());
+
+
+
+            messageService.saveToRooms(roomDto,messageDto);
+
             jwtAuthResponse.setId(patient.getPatient_id());
             jwtAuthResponse.setDietitianId(patient.getDietitian().getDietitian_id());
         }
@@ -119,7 +141,12 @@ public class AuthServiceImpl implements AuthService {
 
         String token = jwtTokenProvider.generateToken(authentication);
 
+        LoginDto firebaseRegister = new LoginDto();
+        firebaseRegister.setEmail(registerDto.getEmail());
+        firebaseRegister.setPassword(registerDto.getPassword());
+        firebaseRegister.setName(registerDto.getName() + " " + registerDto.getSurname());
 
+        jwtAuthResponse.setFirebaseResponse(messageService.saveToUsers(firebaseRegister));
         jwtAuthResponse.setAccessToken(token);
         jwtAuthResponse.setName(registerDto.getName());
         jwtAuthResponse.setSurname(registerDto.getSurname());
