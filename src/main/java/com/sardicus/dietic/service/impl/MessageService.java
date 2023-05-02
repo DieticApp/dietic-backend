@@ -39,6 +39,7 @@ public class MessageService {
         UserRecord.CreateRequest request = new UserRecord.CreateRequest()
                 .setEmail(loginDto.getEmail())
                 .setPassword(loginDto.getPassword())
+                .setUid(loginDto.getEmail())
                 .setDisabled(false);
         UserRecord userRecord = auth.createUser(request);
     }
