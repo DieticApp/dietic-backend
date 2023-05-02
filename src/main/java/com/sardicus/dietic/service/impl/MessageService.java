@@ -2,6 +2,9 @@ package com.sardicus.dietic.service.impl;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
 import com.sardicus.dietic.dto.MessageDto;
 import com.sardicus.dietic.dto.RoomDto;
@@ -30,6 +33,13 @@ public class MessageService {
 
         ApiFuture<List<WriteResult>> future = batch.commit();
 
-
+    }
+    public void registerInFirebase(LoginDto loginDto) throws FirebaseAuthException {
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        UserRecord.CreateRequest request = new UserRecord.CreateRequest()
+                .setEmail(loginDto.getEmail())
+                .setPassword(loginDto.getPassword())
+                .setDisabled(false);
+        UserRecord userRecord = auth.createUser(request);
     }
 }

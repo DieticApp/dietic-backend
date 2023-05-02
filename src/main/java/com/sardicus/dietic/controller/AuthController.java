@@ -1,5 +1,6 @@
 package com.sardicus.dietic.controller;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.RegisterDto;
 import com.sardicus.dietic.response.JWTAuthResponse;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<JWTAuthResponse> registerUser(@RequestBody RegisterDto registerDto) throws ExecutionException, InterruptedException {
+    public ResponseEntity<JWTAuthResponse> registerUser(@RequestBody RegisterDto registerDto) throws ExecutionException, InterruptedException, FirebaseAuthException {
         return new ResponseEntity<>(authService.register(registerDto), HttpStatus.CREATED);
     }
 }

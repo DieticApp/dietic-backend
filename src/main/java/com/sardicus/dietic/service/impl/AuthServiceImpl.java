@@ -1,5 +1,6 @@
 package com.sardicus.dietic.service.impl;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.MessageDto;
 import com.sardicus.dietic.dto.RegisterDto;
@@ -76,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
 
 
 
-    public JWTAuthResponse register(RegisterDto registerDto) throws ExecutionException, InterruptedException {
+    public JWTAuthResponse register(RegisterDto registerDto) throws ExecutionException, InterruptedException, FirebaseAuthException {
         JWTAuthResponse jwtAuthResponse = new JWTAuthResponse();
 
         if(userRepository.existsByEmail(registerDto.getEmail())){
@@ -145,6 +146,7 @@ public class AuthServiceImpl implements AuthService {
         firebaseRegister.setEmail(registerDto.getEmail());
         firebaseRegister.setPassword(registerDto.getPassword());
         firebaseRegister.setName(registerDto.getName() + " " + registerDto.getSurname());
+        messageService.registerInFirebase(firebaseRegister);
 
         jwtAuthResponse.setFirebaseResponse(messageService.saveToUsers(firebaseRegister));
         jwtAuthResponse.setAccessToken(token);
