@@ -1,7 +1,12 @@
 package com.sardicus.dietic.dto;
 
-import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class FoodDto {
     private Integer food_id;
     private String description;
