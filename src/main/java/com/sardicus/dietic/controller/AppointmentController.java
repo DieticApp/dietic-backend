@@ -2,6 +2,7 @@ package com.sardicus.dietic.controller;
 
 import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.repo.DietitianRepo;
+import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class AppointmentController {
 
     private final AppointmentService appointmentService;
     private final DietitianRepo dietitianRepo;
+    private final PatientRepo patientRepo;
 
     @GetMapping("/appointment/{appointmentId}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long appointmentId) {
@@ -29,7 +31,12 @@ public class AppointmentController {
     @GetMapping("/dietitian")
     List<AppointmentDto> getAppointmentsByDietitianId(@AuthenticationPrincipal UserDetails dietitian) {
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
-        return appointmentService.getAppointmentsByDietitianId(dietitianId);
+        List<AppointmentDto> appointmentDto = appointmentService.getAppointmentsByDietitianId(dietitianId);
+        for (AppointmentDto element : appointmentDto) {
+            element.setDietitianName(dietitianRepo.findByEmail(dietitian.getUsername()).get().getName() +" "+ dietitianRepo.findByEmail(dietitian.getUsername()).get().getSurname());
+            element.setPatientName(patientRepo.findById(element.getPatient_id()).get().getName() +" "+ patientRepo.findById(element.getPatient_id()).get().getSurname());
+        }
+        return appointmentDto;
     }
     @PostMapping("/dietitian/byDate/{dietitianId}")
     List<AppointmentDto> getAppointmentsByDietitianIdAndDate(@PathVariable Integer dietitianId ,@RequestBody AppointmentDto appointmentDto ) {
@@ -38,7 +45,12 @@ public class AppointmentController {
     }
     @GetMapping("/patient/{patientId}")
     List<AppointmentDto> getAppointmentsByPatientId(@PathVariable Integer patientId) {
-        return appointmentService.getAppointmentsByPatientId(patientId);
+        List<AppointmentDto> appointmentDto = appointmentService.getAppointmentsByPatientId(patientId);
+        for (AppointmentDto element : appointmentDto) {
+            element.setDietitianName(dietitianRepo.findById(element.getDietitian_id()).get().getName()+" "+ dietitianRepo.findById(element.getDietitian_id()).get().getSurname());
+            element.setPatientName(patientRepo.findById(element.getPatient_id()).get().getName() +" "+ patientRepo.findById(element.getPatient_id()).get().getSurname());
+        }
+        return appointmentDto;
     }
 
 
