@@ -61,7 +61,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<AppointmentDto> getAppointmentsByPatientId(Integer patientId) {
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 () -> new ResourceNotFoundException("Patient", "id", patientId));
-        List<Appointment> appointments = appointmentRepo.findAppointmentsByPatient(patient);
+        AppointmentStatus status = AppointmentStatus.BOOKED;
+        List<Appointment> appointments = appointmentRepo.findAppointmentsByStatusAndPatient(status,patient);
 
         return appointments.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
