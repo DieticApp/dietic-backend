@@ -25,7 +25,7 @@ public class DietPlanServiceImpl implements DietPlanService {
 
     private final ModelMapper mapper;
     @Override
-    public DietPlanDto saveFood(Integer dietitianId , Integer patientId  , Integer foodId , DietPlanDto dietPlanDto) {
+    public DietPlanDto saveFood(Integer dietitianId , Integer patientId , DietPlanDto dietPlanDto) {
             DietPlan dietPlan = mapToEntity(dietPlanDto);
 
         Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
@@ -36,7 +36,7 @@ public class DietPlanServiceImpl implements DietPlanService {
                 () -> new ResourceNotFoundException("Patient", "id", patientId));
         dietPlan.setPatient(patient);
 
-        Food food = foodRepo.findById(foodId).orElseThrow(
+        Food food = foodRepo.findById(dietPlanDto.getFood_id()).orElseThrow(
                 () -> new ResourceNotFoundException("Food", "id", patientId));
         dietPlan.setFood(food);
 

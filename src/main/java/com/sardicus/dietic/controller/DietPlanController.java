@@ -23,12 +23,11 @@ public class DietPlanController {
 
 
 
-    @PostMapping("/{dietitianId}/{patientId}/{foodId}")
+    @PostMapping("/{dietitianId}/{patientId}")
     public ResponseEntity<DietPlanDto> saveFood(@PathVariable(value = "dietitianId")int dietitianId ,
                                                 @PathVariable(value = "patientId") int patientId  ,
-                                                @PathVariable(value = "foodId")int foodId,
                                                     @RequestBody DietPlanDto dietPlanDto){
-        return new ResponseEntity<>(dietPlanService.saveFood(dietitianId,patientId,foodId , dietPlanDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(dietPlanService.saveFood(dietitianId,patientId , dietPlanDto), HttpStatus.CREATED);
     }
     @GetMapping("/{dietitianId}/{patientId}")
     public List<DietPlanDto> getPlanByPatientId(@PathVariable(value = "dietitianId")int dietitianId,

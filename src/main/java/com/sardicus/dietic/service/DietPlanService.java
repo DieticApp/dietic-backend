@@ -6,7 +6,7 @@ import com.sardicus.dietic.dto.DietPlanDto;
 import java.util.List;
 
 public interface DietPlanService {
-    DietPlanDto saveFood(Integer dietitianId , Integer patientId , Integer foodId , DietPlanDto dietPlan);
+    DietPlanDto saveFood(Integer dietitianId , Integer patientId, DietPlanDto dietPlan);
     void deleteFood(Integer dietitianId ,Integer patientId , Integer day , Integer meal , Integer foodId );
     DietPlanDto updateStatusOfFood(Integer planId, DietPlanDto dietPlanDto);
     void deletePlanByPatientId(Integer dietitianId , Integer patientId);
