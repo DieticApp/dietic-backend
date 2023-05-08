@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 
@@ -108,6 +109,12 @@ public class AuthServiceImpl implements AuthService {
             patient.setSurname(registerDto.getSurname());
             patient.setDietitian(dietitianRepo.getReferenceById(registerDto.getDietitianId()));
             patient.setEmail(registerDto.getEmail());
+
+            Optional.ofNullable(registerDto.getAge()).ifPresent(patient::setAge);
+            Optional.ofNullable(registerDto.getHeight()).ifPresent(patient::setHeight);
+            Optional.ofNullable(registerDto.getWeight()).ifPresent(patient::setWeight);
+            Optional.ofNullable(registerDto.getBodyFat()).ifPresent(patient::setBodyFat);
+            Optional.ofNullable(registerDto.getAbout()).ifPresent(patient::setAbout);
             patientRepo.save(patient);
             Role roles = roleRepository.findByName("ROLE_PATIENT").get();
             user.setRoles(Collections.singleton(roles));

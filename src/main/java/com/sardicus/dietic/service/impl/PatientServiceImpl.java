@@ -42,6 +42,8 @@ public class PatientServiceImpl implements PatientService {
         patient.setAge(patientRequest.getAge());
         patient.setHeight(patientRequest.getHeight());
         patient.setWeight(patientRequest.getWeight());
+        patient.setBodyFat(patientRequest.getBodyFat());
+        patient.setAbout(patientRequest.getAbout());
 
 
         Patient updatedEmployee = patientRepo.save(patient);

@@ -27,8 +27,9 @@ public class Patient {
     private Set<DietPlan> dietPlans = new HashSet<>();
     private Integer age;
     private Integer height;
-    private Integer weight;
-    private Integer bodyFat;
+    private Double weight;
+    private Double bodyFat;
+    private String about;
 
 
 }

@@ -14,6 +14,13 @@ public class RegisterDto {
     private String password;
     private String roleName;
     private Integer dietitianId;
+    private Integer age;
+    private Integer height;
+    private Double weight;
+    private Double bodyFat;
+    private String about;
+
+
 
 
 
