@@ -36,6 +36,10 @@ public class PatientController {
         Integer patientId = patientRepo.findByEmail(patient.getUsername()).get().getPatient_id();
         return new ResponseEntity<>(patientService.getPatientById(patientId) , HttpStatus.OK);
     }
+    @GetMapping("/{patientId}/details")
+    public ResponseEntity<PatientDto> getPatientDetailsById( @PathVariable(value = "patientId") Integer patientId){
+        return new ResponseEntity<>(patientService.getPatientById(patientId) , HttpStatus.OK);
+    }
 
     @PutMapping("/{patientId}")
     public ResponseEntity<PatientDto> updatePatient(@AuthenticationPrincipal UserDetails dietitian,
