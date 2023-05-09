@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -34,15 +35,16 @@ public class DietPlanController {
                                                @PathVariable(value = "patientId") int patientId){
         return dietPlanService.getPlanByPatientId(patientId);
     }
-    @GetMapping("patient/{patientId}/day/{day}")
-    public List<DietPlanDto> getPlanByDay(@PathVariable(value = "patientId")int patientId,
-                                                @PathVariable(value = "day") int day){
+    @PostMapping("patient/{patientId}")
+    public List<DietPlanDto> getPlanByDay(@PathVariable(value = "patientId")int patientId,@RequestBody DietPlanDto dietPlanDto){
+        LocalDate day = dietPlanDto.getDay();
         return dietPlanService.getPlanByDay(day , patientId);
     }
-    @GetMapping("patient/{patientId}/day/{day}/meal/{meal}")
+    @PostMapping("patient/{patientId}/meal/{meal}")
     public List<DietPlanDto> getPlansByDayAndMeal(@PathVariable(value = "patientId")int patientId,
-                                          @PathVariable(value = "day") int day,
+                                                  @RequestBody DietPlanDto dietPlanDto,
                                                  @PathVariable(value = "meal") int meal){
+        LocalDate day = dietPlanDto.getDay();
         return dietPlanService.getByMeal(patientId,day,meal);
     }
     @PatchMapping(path = "/updateEaten/{planId}")

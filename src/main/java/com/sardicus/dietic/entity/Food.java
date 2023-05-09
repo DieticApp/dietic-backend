@@ -27,7 +27,7 @@ public class Food {
     @Column(name = "Carbohydrate" , columnDefinition="Decimal(4,2))")
     private Double carb;
     @Column(name = "Energy")
-    private Integer energy;
+    private Double energy;
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<DietPlan> dietPlans = new HashSet<>();

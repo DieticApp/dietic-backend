@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +28,11 @@ public class DietPlanServiceImpl implements DietPlanService {
     private final ModelMapper mapper;
     @Override
     public DietPlanDto saveFood(Integer dietitianId , Integer patientId , DietPlanDto dietPlanDto) {
-            DietPlan dietPlan = mapToEntity(dietPlanDto);
+        DietPlan dietPlan = mapToEntity(dietPlanDto);
+
+
+        Food food = foodRepo.findById(dietPlanDto.getFood_id()).orElseThrow(
+                () -> new ResourceNotFoundException("Food", "id", patientId));
 
         Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
                 () -> new ResourceNotFoundException("Dietitian", "id", dietitianId));
@@ -36,8 +42,7 @@ public class DietPlanServiceImpl implements DietPlanService {
                 () -> new ResourceNotFoundException("Patient", "id", patientId));
         dietPlan.setPatient(patient);
 
-        Food food = foodRepo.findById(dietPlanDto.getFood_id()).orElseThrow(
-                () -> new ResourceNotFoundException("Food", "id", patientId));
+
         dietPlan.setFood(food);
 
 
@@ -59,7 +64,7 @@ public class DietPlanServiceImpl implements DietPlanService {
     }
 
     @Override
-    public void deletePlanByMeal(Integer patientId, Integer dayId, Integer mealId) {
+    public void deletePlanByMeal(Integer patientId, LocalDate dayId, Integer mealId) {
 
     }
 
@@ -82,7 +87,7 @@ public class DietPlanServiceImpl implements DietPlanService {
     }
 
     @Override
-    public List<DietPlanDto> getPlanByDay(Integer day, Integer patientId) {
+    public List<DietPlanDto> getPlanByDay(LocalDate day, Integer patientId) {
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 () -> new ResourceNotFoundException("Patient", "id", patientId));
         List<DietPlan> dietPlans = dietPlanRepo.findDietPlansByDayAndPatient(day , patient);
@@ -91,7 +96,7 @@ public class DietPlanServiceImpl implements DietPlanService {
     }
 
     @Override
-    public List<DietPlanDto> getByMeal(Integer patientId, Integer day, Integer meal) {
+    public List<DietPlanDto> getByMeal(Integer patientId, LocalDate day, Integer meal) {
         Patient patient = patientRepo.findById(patientId).orElseThrow(
                 () -> new ResourceNotFoundException("Patient", "id", patientId));
         List<DietPlan> dietPlans = dietPlanRepo.findDietPlansByPatientAndDayAndMeal(patient , day , meal);
@@ -100,12 +105,20 @@ public class DietPlanServiceImpl implements DietPlanService {
     }
     private DietPlanDto mapToDTO(DietPlan dietPlan){
         DietPlanDto dietPlanDto = mapper.map(dietPlan, DietPlanDto.class);
+        double portion = dietPlanDto.getPortion();
+
+
         dietPlanDto.setFood_name(foodRepo.findById(dietPlanDto.getFood_id()).get().getDescription());
-        dietPlanDto.setFat(foodRepo.findById(dietPlanDto.getFood_id()).get().getFat());
-        dietPlanDto.setCarb(foodRepo.findById(dietPlanDto.getFood_id()).get().getCarb());
-        dietPlanDto.setProtein(foodRepo.findById(dietPlanDto.getFood_id()).get().getProtein());
-        dietPlanDto.setEnergy(foodRepo.findById(dietPlanDto.getFood_id()).get().getEnergy());
+        dietPlanDto.setFat(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getFat()*portion));
+        dietPlanDto.setCarb(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getCarb()*portion));
+        dietPlanDto.setProtein(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getProtein()*portion));
+        dietPlanDto.setEnergy(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getEnergy()*portion));
         return dietPlanDto;
+    }
+    public static double round(double number) {
+        DecimalFormat decimalFormat = new DecimalFormat("#," + "0".repeat(2));
+        String roundedNumber = decimalFormat.format(number);
+        return Double.parseDouble(roundedNumber);
     }
 
     // convert DTO to entity
