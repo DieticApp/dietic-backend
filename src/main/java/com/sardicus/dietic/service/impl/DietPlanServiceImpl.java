@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,9 +117,8 @@ public class DietPlanServiceImpl implements DietPlanService {
         return dietPlanDto;
     }
     public static double round(double number) {
-        DecimalFormat decimalFormat = new DecimalFormat("#," + "0".repeat(2));
-        String roundedNumber = decimalFormat.format(number);
-        return Double.parseDouble(roundedNumber);
+      double roundedNumber = (double) (Math.round(number*1000.0)/1000.0);
+        return roundedNumber;
     }
 
     // convert DTO to entity
