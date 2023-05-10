@@ -1,6 +1,7 @@
 package com.sardicus.dietic.controller;
 
 import com.sardicus.dietic.dto.PatientDto;
+import com.sardicus.dietic.dto.WeightDto;
 import com.sardicus.dietic.entity.Food;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
@@ -39,6 +40,11 @@ public class PatientController {
     @GetMapping("/{patientId}/details")
     public ResponseEntity<PatientDto> getPatientDetailsById( @PathVariable(value = "patientId") Integer patientId){
         return new ResponseEntity<>(patientService.getPatientById(patientId) , HttpStatus.OK);
+    }
+    @GetMapping("/progress")
+    public ResponseEntity<List<WeightDto>> getWeightProgress(@AuthenticationPrincipal UserDetails patient){
+        Integer patientId = patientRepo.findByEmail(patient.getUsername()).get().getPatient_id();
+        return new ResponseEntity<>(patientService.getWeightProgress(patientId) , HttpStatus.OK);
     }
 
     @PutMapping("/{patientId}")

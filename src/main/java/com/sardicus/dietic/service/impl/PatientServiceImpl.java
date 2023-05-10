@@ -1,6 +1,7 @@
 package com.sardicus.dietic.service.impl;
 
 import com.sardicus.dietic.dto.PatientDto;
+import com.sardicus.dietic.dto.WeightDto;
 import com.sardicus.dietic.entity.Dietitian;
 import com.sardicus.dietic.entity.Patient;
 import com.sardicus.dietic.entity.Weight;
@@ -61,14 +62,24 @@ public class PatientServiceImpl implements PatientService {
         return mapToDTO(updatedPatient);
     }
 
+    @Override
+    public List<WeightDto> getWeightProgress(Integer patientId) {
+
+        Patient patient = patientRepo.findById(patientId).orElseThrow(() ->
+                new ResourceNotFoundException("Patient", "id", patientId));
+        List<Weight> weightList = weightRepo.findWeightByPatient(patient);
+
+        return weightList.stream().map(this::mapWeightToDTO).collect(Collectors.toList());
+    }
+
     public void deletePatient(int dietitianId , int patientId){
 
         Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
-                () -> new ResourceNotFoundException("Company", "id", dietitianId));
+                () -> new ResourceNotFoundException("Dietitian", "id", dietitianId));
 
 
         Patient patient = patientRepo.findById(patientId).orElseThrow(() ->
-                new ResourceNotFoundException("Employee", "id", patientId));
+                new ResourceNotFoundException("Patient", "id", patientId));
 
         if(!patient.getDietitian().getDietitian_id().equals(dietitian.getDietitian_id())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Comment does not belongs to post");
@@ -85,7 +96,7 @@ public class PatientServiceImpl implements PatientService {
     public PatientDto getPatientById(Integer patientId) {
 
         Patient patient = patientRepo.findById(patientId).orElseThrow(() ->
-                new ResourceNotFoundException("Employee", "id", patientId));
+                new ResourceNotFoundException("Patient", "id", patientId));
 
 
         return mapToDTO(patient);
@@ -94,6 +105,7 @@ public class PatientServiceImpl implements PatientService {
     private PatientDto mapToDTO(Patient patient){
         return mapper.map(patient, PatientDto.class);
     }
+    private WeightDto mapWeightToDTO(Weight weight){return mapper.map(weight, WeightDto.class);}
     private Patient mapToEntity(PatientDto patientDto){
         return mapper.map(patientDto, Patient.class);
     }
