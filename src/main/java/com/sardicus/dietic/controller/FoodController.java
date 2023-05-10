@@ -5,10 +5,7 @@ import com.sardicus.dietic.entity.Food;
 import com.sardicus.dietic.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 @RestController
@@ -20,6 +17,10 @@ public class FoodController {
 
     @GetMapping("/search")
     public ResponseEntity<List<FoodDto>> searchFoods(@RequestParam("query") String query){
-        return ResponseEntity.ok(foodService.searchFoods(query));
+        return ResponseEntity.ok(foodService.searchFoods(query,15));
+    }
+    @PostMapping("/add")
+    public ResponseEntity<FoodDto> addFood(@RequestBody FoodDto foodDto){
+        return ResponseEntity.ok(foodService.addFood(foodDto));
     }
 }
