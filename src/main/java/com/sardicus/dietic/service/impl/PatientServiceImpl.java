@@ -3,16 +3,19 @@ package com.sardicus.dietic.service.impl;
 import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.entity.Dietitian;
 import com.sardicus.dietic.entity.Patient;
+import com.sardicus.dietic.entity.Weight;
 import com.sardicus.dietic.exception.APIException;
 import com.sardicus.dietic.exception.ResourceNotFoundException;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
+import com.sardicus.dietic.repo.WeightRepo;
 import com.sardicus.dietic.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +25,7 @@ public class PatientServiceImpl implements PatientService {
     private final PatientRepo patientRepo;
     private final DietitianRepo dietitianRepo;
     private final ModelMapper mapper;
+    private final WeightRepo weightRepo;
 
 
 
@@ -46,8 +50,15 @@ public class PatientServiceImpl implements PatientService {
         patient.setAbout(patientRequest.getAbout());
 
 
-        Patient updatedEmployee = patientRepo.save(patient);
-        return mapToDTO(updatedEmployee);
+        Patient updatedPatient = patientRepo.save(patient);
+        if (patientRequest.getWeight().equals(patient.getWeight())){
+            Weight weightData = new Weight();
+            weightData.setWeight(patient.getWeight());
+            weightData.setDate(LocalDate.now());
+            weightData.setPatient(patient);
+            weightRepo.save(weightData);
+        }
+        return mapToDTO(updatedPatient);
     }
 
     public void deletePatient(int dietitianId , int patientId){

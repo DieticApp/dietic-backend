@@ -5,15 +5,9 @@ import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.MessageDto;
 import com.sardicus.dietic.dto.RegisterDto;
 import com.sardicus.dietic.dto.RoomDto;
-import com.sardicus.dietic.entity.Dietitian;
-import com.sardicus.dietic.entity.Patient;
-import com.sardicus.dietic.entity.Role;
-import com.sardicus.dietic.entity.User;
+import com.sardicus.dietic.entity.*;
 import com.sardicus.dietic.exception.APIException;
-import com.sardicus.dietic.repo.DietitianRepo;
-import com.sardicus.dietic.repo.PatientRepo;
-import com.sardicus.dietic.repo.RoleRepo;
-import com.sardicus.dietic.repo.UserRepo;
+import com.sardicus.dietic.repo.*;
 import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.security.JwtTokenProvider;
 import com.sardicus.dietic.service.AuthService;
@@ -26,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
@@ -44,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
     private final RoleRepo roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final WeightRepo weightRepo;
 
 
 
@@ -112,10 +108,21 @@ public class AuthServiceImpl implements AuthService {
 
             Optional.ofNullable(registerDto.getAge()).ifPresent(patient::setAge);
             Optional.ofNullable(registerDto.getHeight()).ifPresent(patient::setHeight);
-            Optional.ofNullable(registerDto.getWeight()).ifPresent(patient::setWeight);
+            Weight weightData = new Weight();
+            Optional.ofNullable(registerDto.getWeight())
+                    .ifPresent(weight -> {
+                        patient.setWeight(weight);
+                        weightData.setWeight(patient.getWeight());
+                        weightData.setDate(LocalDate.now());
+                    });
+
             Optional.ofNullable(registerDto.getBodyFat()).ifPresent(patient::setBodyFat);
             Optional.ofNullable(registerDto.getAbout()).ifPresent(patient::setAbout);
             patientRepo.save(patient);
+            if (weightData.getWeight() != null){
+                weightData.setPatient(patient);
+                weightRepo.save(weightData);
+            }
             Role roles = roleRepository.findByName("ROLE_PATIENT").get();
             user.setRoles(Collections.singleton(roles));
 
