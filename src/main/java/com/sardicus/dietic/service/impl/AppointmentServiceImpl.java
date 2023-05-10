@@ -122,14 +122,12 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentRepo.deleteById(appointmentId);
     }
     private AppointmentDto mapToDTO(Appointment appointment){
-        AppointmentDto appointmentDto = mapper.map(appointment, AppointmentDto.class);
-        return appointmentDto;
+        return mapper.map(appointment, AppointmentDto.class);
     }
 
     // convert DTO to entity
     private Appointment mapToEntity(AppointmentDto appointmentDto){
-        Appointment appointment = mapper.map(appointmentDto, Appointment.class);
-        return appointment;
+        return mapper.map(appointmentDto, Appointment.class);
     }
 
 }

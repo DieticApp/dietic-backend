@@ -45,12 +45,7 @@ public class AppointmentController {
     }
     @GetMapping("/patient/{patientId}")
     List<AppointmentDto> getAppointmentsByPatientId(@PathVariable Integer patientId) {
-        List<AppointmentDto> appointmentDto = appointmentService.getAppointmentsByPatientId(patientId);
-        for (AppointmentDto element : appointmentDto) {
-            element.setDietitianName(dietitianRepo.findById(element.getDietitian_id()).get().getName()+" "+ dietitianRepo.findById(element.getDietitian_id()).get().getSurname());
-            element.setPatientName(patientRepo.findById(element.getPatient_id()).get().getName() +" "+ patientRepo.findById(element.getPatient_id()).get().getSurname());
-        }
-        return appointmentDto;
+        return appointmentService.getAppointmentsByPatientId(patientId);
     }
 
 

@@ -14,8 +14,10 @@ public class AppointmentDto {
     private AppointmentStatus status = AppointmentStatus.BOOKED;
     private Integer dietitian_id;
     private String dietitianName;
+    private String dietitianSurname;
     private Integer patient_id;
     private String patientName;
+    private String patientSurname;
     private LocalDate appointmentDate;
     private Time appointmentTime;
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
