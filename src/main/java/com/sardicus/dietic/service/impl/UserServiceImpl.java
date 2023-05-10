@@ -25,6 +25,14 @@ public class UserServiceImpl implements UserService {
 
         return mapToDTO(updatedUser);
     }
+
+    @Override
+    public UserDto getUserById(Long userId) {
+        User user = userRepo.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User", "id:", userId));
+        return mapToDTO(user);
+    }
+
     public UserDto mapToDTO(User user){
         return mapper.map(user,UserDto.class);
     }

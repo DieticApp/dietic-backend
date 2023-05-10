@@ -19,5 +19,9 @@ public class UserController {
        Long userId = userRepo.findByEmail(user.getUsername()).get().getId();
         return userService.updatePicOfUser(userId,userDto);
     }
-
+    @GetMapping("/getPicture")
+    public UserDto getPicture(@AuthenticationPrincipal UserDetails user){
+        Long userId = userRepo.findByEmail(user.getUsername()).get().getId();
+        return userService.getUserById(userId);
+    }
 }
