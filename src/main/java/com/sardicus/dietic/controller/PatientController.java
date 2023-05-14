@@ -1,10 +1,12 @@
 package com.sardicus.dietic.controller;
 
+import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.dto.WeightDto;
 import com.sardicus.dietic.entity.Food;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
+import com.sardicus.dietic.repo.UserRepo;
 import com.sardicus.dietic.security.CustomUserDetailsService;
 import com.sardicus.dietic.service.FoodService;
 import com.sardicus.dietic.service.PatientService;
@@ -25,12 +27,17 @@ public class PatientController {
     private final PatientRepo patientRepo;
     private final PatientService patientService;
     private final FoodService foodService;
+    private final UserRepo userRepo;
 
 
     @GetMapping()
     public List<PatientDto> getPatientsByDietitianId(@AuthenticationPrincipal UserDetails dietitian){
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
-        return patientService.getPatientsByDietitianId(dietitianId);
+        List<PatientDto> patientDto = patientService.getPatientsByDietitianId(dietitianId);
+        for (PatientDto element : patientDto) {
+            element.setPicture(userRepo.findByEmail(element.getEmail()).get().getPicture());
+        }
+        return patientDto;
     }
     @GetMapping("/details")
     public ResponseEntity<PatientDto> getPatientDetails(@AuthenticationPrincipal UserDetails patient){

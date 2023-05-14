@@ -17,5 +17,6 @@ public class PatientDto {
     private Double weight;
     private Double bodyFat;
     private String about;
+    private String picture;
 
 }

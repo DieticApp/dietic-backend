@@ -3,6 +3,7 @@ package com.sardicus.dietic.controller;
 import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
+import com.sardicus.dietic.repo.UserRepo;
 import com.sardicus.dietic.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final DietitianRepo dietitianRepo;
     private final PatientRepo patientRepo;
+    private final UserRepo userRepo;
 
     @GetMapping("/appointment/{appointmentId}")
     public ResponseEntity<AppointmentDto> getAppointmentById(@PathVariable Long appointmentId) {
@@ -41,7 +43,11 @@ public class AppointmentController {
     @PostMapping("/dietitian/byDate/{dietitianId}")
     List<AppointmentDto> getAppointmentsByDietitianIdAndDate(@PathVariable Integer dietitianId ,@RequestBody AppointmentDto appointmentDto ) {
         LocalDate date = appointmentDto.getAppointmentDate();
-        return appointmentService.getAppointmentsByDietitianIdAndDate(dietitianId , date);
+        List<AppointmentDto> appointmentDtoResponse = appointmentService.getAppointmentsByDietitianIdAndDate(dietitianId,date);
+        for (AppointmentDto element : appointmentDtoResponse) {
+            element.setPicture(userRepo.findByEmail(patientRepo.findById(element.getPatient_id()).get().getEmail()).get().getPicture());
+        }
+        return appointmentDtoResponse;
     }
     @GetMapping("/patient/{patientId}")
     List<AppointmentDto> getAppointmentsByPatientId(@PathVariable Integer patientId) {

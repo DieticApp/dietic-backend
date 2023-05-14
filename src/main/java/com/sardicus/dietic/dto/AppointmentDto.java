@@ -18,6 +18,7 @@ public class AppointmentDto {
     private Integer patient_id;
     private String patientName;
     private String patientSurname;
+    private String picture;
     private LocalDate appointmentDate;
     private Time appointmentTime;
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
