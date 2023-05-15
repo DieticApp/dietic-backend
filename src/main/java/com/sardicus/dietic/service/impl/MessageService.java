@@ -32,13 +32,15 @@ public class MessageService {
     public void changePassword(String email, String newPassword) throws FirebaseAuthException {
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         UserRecord userRecord = firebaseAuth.getUserByEmail(email);
+
         UserRecord.UpdateRequest request = new UserRecord.UpdateRequest(userRecord.getUid())
                 .setPassword(newPassword);
 
         firebaseAuth.updateUser(request);
 
         DocumentReference userRef = db.collection("Users").document(email);
-        userRef.update("password", newPassword);
+        String encodedPassword = passwordEncoder.encode(newPassword);
+        userRef.update("password", encodedPassword);
     }
     public void saveToRooms(RoomDto roomDto, MessageDto messageDto) throws ExecutionException, InterruptedException {
         WriteBatch batch = db.batch();

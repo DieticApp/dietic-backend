@@ -47,15 +47,10 @@ public class UserServiceImpl implements UserService {
         if (!passwordEncoder.matches(passwordChangeRequest.getCurrentPassword(), user.getPassword())) {
             throw new InvalidPasswordException("Current password is incorrect");
         }
-        String newPassword = null;
-        System.out.println(passwordChangeRequest.getNewPassword());
-        try {
-            newPassword = passwordEncoder.encode(passwordChangeRequest.getNewPassword());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        String newPassword = passwordChangeRequest.getNewPassword();
+        String encodedPassword = passwordEncoder.encode(passwordChangeRequest.getNewPassword());
 
-        user.setPassword(newPassword);
+        user.setPassword(encodedPassword);
          userRepo.save(user);
          messageService.changePassword(user.getEmail(),newPassword);
     }

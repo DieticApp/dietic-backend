@@ -2,6 +2,7 @@ package com.sardicus.dietic.controller;
 
 import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.dto.PatientDto;
+import com.sardicus.dietic.dto.StepDto;
 import com.sardicus.dietic.dto.WeightDto;
 import com.sardicus.dietic.entity.Food;
 import com.sardicus.dietic.repo.DietitianRepo;
@@ -10,6 +11,7 @@ import com.sardicus.dietic.repo.UserRepo;
 import com.sardicus.dietic.security.CustomUserDetailsService;
 import com.sardicus.dietic.service.FoodService;
 import com.sardicus.dietic.service.PatientService;
+import com.sardicus.dietic.service.StepService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -28,7 +31,21 @@ public class PatientController {
     private final PatientService patientService;
     private final FoodService foodService;
     private final UserRepo userRepo;
+    private final StepService stepService;
 
+    @PostMapping("/{patientId}/saveSteps")
+    ResponseEntity<StepDto> saveStepNumber(@PathVariable Integer patientId , @RequestBody StepDto stepDto ) {
+        return new ResponseEntity<>( stepService.saveSteps(patientId,stepDto),HttpStatus.CREATED);
+    }
+    @PostMapping("/{patientId}/getDailySteps")
+    ResponseEntity<StepDto> getDailySteps(@PathVariable Integer patientId , @RequestBody StepDto stepDto ) {
+       LocalDate localDate = stepDto.getDate();
+        return new ResponseEntity<>( stepService.getDailySteps(patientId,localDate),HttpStatus.OK);
+    }
+    @PostMapping("/{patientId}/getAllSteps")
+    ResponseEntity<List<StepDto>> getAllSteps(@PathVariable Integer patientId ) {
+        return new ResponseEntity<>( stepService.getSteps(patientId),HttpStatus.OK);
+    }
 
     @GetMapping()
     public List<PatientDto> getPatientsByDietitianId(@AuthenticationPrincipal UserDetails dietitian){
