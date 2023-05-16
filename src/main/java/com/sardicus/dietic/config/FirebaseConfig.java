@@ -1,30 +1,29 @@
 package com.sardicus.dietic.config;
 
-import com.google.api.core.ApiFuture;
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.FirestoreOptions;
-import com.google.cloud.firestore.WriteResult;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.sardicus.dietic.dto.LoginDto;
 import jakarta.annotation.PostConstruct;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
+import java.io.*;
 
 @Service
 public class FirebaseConfig {
     @PostConstruct
     public void init() throws IOException {
-        FileInputStream serviceAccount = new FileInputStream( "./dietic-firebase.json");
+        InputStream inputStream = FirebaseConfig.class.getClassLoader().getResourceAsStream("dietic-firebase.json");
+        File tempFile = File.createTempFile("dietic-firebase", ".json");
+        tempFile.deleteOnExit();
+
+        try (FileOutputStream out = new FileOutputStream(tempFile)) {
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+        }
+        FileInputStream serviceAccount = new FileInputStream(tempFile);
       FirebaseOptions options = new FirebaseOptions.Builder()
               .setCredentials(GoogleCredentials.fromStream(serviceAccount))
               .build();

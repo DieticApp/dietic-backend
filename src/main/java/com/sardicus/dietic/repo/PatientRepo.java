@@ -1,7 +1,6 @@
 package com.sardicus.dietic.repo;
 
 
-import com.sardicus.dietic.entity.Dietitian;
 import com.sardicus.dietic.entity.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

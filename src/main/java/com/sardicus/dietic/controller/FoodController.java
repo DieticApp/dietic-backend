@@ -1,7 +1,6 @@
 package com.sardicus.dietic.controller;
 
 import com.sardicus.dietic.dto.FoodDto;
-import com.sardicus.dietic.entity.Food;
 import com.sardicus.dietic.service.FoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -6,7 +6,6 @@ import lombok.Data;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Data
 public class AppointmentDto {

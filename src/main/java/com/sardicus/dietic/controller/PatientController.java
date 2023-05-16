@@ -1,14 +1,11 @@
 package com.sardicus.dietic.controller;
 
-import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.dto.StepDto;
 import com.sardicus.dietic.dto.WeightDto;
-import com.sardicus.dietic.entity.Food;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.repo.UserRepo;
-import com.sardicus.dietic.security.CustomUserDetailsService;
 import com.sardicus.dietic.service.FoodService;
 import com.sardicus.dietic.service.PatientService;
 import com.sardicus.dietic.service.StepService;

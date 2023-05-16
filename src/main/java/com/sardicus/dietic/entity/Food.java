@@ -15,18 +15,12 @@ import java.util.Set;
 @Table(name = "food")
 public class Food {
     @Id
-    @Column(name = "food_id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer food_id;
-    @Column(name = "description")
     private String description;
-    @Column(name = "Protein" , columnDefinition="Decimal(4,2))")
     private Double protein;
-    @Column(name = "Fat" , columnDefinition="Decimal(5,2))")
     private Double fat;
-    @Column(name = "Carbohydrate" , columnDefinition="Decimal(4,2))")
-    private Double carb;
-    @Column(name = "Energy")
+    private Double carbohydrate;
     private Double energy;
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, orphanRemoval = true)

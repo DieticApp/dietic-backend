@@ -111,7 +111,7 @@ public class DietPlanServiceImpl implements DietPlanService {
 
         dietPlanDto.setFood_name(foodRepo.findById(dietPlanDto.getFood_id()).get().getDescription());
         dietPlanDto.setFat(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getFat()*portion));
-        dietPlanDto.setCarb(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getCarb()*portion));
+        dietPlanDto.setCarb(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getCarbohydrate()*portion));
         dietPlanDto.setProtein(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getProtein()*portion));
         dietPlanDto.setEnergy(round(foodRepo.findById(dietPlanDto.getFood_id()).get().getEnergy()*portion));
         return dietPlanDto;

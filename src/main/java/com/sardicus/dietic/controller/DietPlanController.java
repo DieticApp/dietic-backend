@@ -1,16 +1,10 @@
 package com.sardicus.dietic.controller;
 
-import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.dto.DietPlanDto;
-import com.sardicus.dietic.dto.PatientDto;
-import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.service.DietPlanService;
-import com.sardicus.dietic.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;

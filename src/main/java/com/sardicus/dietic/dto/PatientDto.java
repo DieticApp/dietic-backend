@@ -2,8 +2,6 @@ package com.sardicus.dietic.dto;
 
 import lombok.Data;
 
-import java.util.Set;
-
 @Data
 public class PatientDto {
 
