@@ -12,4 +12,5 @@ public interface NoteService {
     NoteDto updateNote(Integer noteId ,  NoteDto noteDto);
     void updateNoteStatus(Integer noteId);
     void deleteNote(Integer noteId);
+    List<NoteDto> getUpcomingNotes(Integer dietitianId);
 }

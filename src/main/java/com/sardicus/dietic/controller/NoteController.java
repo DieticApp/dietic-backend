@@ -33,6 +33,11 @@ public class NoteController {
         LocalDate localDate = noteDto.getDate();
         return new ResponseEntity<>( noteService.getDailyNotes(dietitianId,localDate),HttpStatus.OK);
     }
+    @GetMapping("/getUpcomingNotes")
+    ResponseEntity<List<NoteDto>> getUpcomingNotes(@AuthenticationPrincipal UserDetails dietitian ) {
+        Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
+        return new ResponseEntity<>( noteService.getUpcomingNotes(dietitianId),HttpStatus.OK);
+    }
     @DeleteMapping("/delete/{noteId}")
     @ResponseStatus(HttpStatus.OK)
     void deleteNoteById(@PathVariable Integer noteId) {

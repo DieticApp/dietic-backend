@@ -9,4 +9,5 @@ import java.util.List;
 
 public interface NoteRepo extends JpaRepository<Note, Integer> {
     List<Note> findNotesByDietitianAndDate(Dietitian dietitian , LocalDate due_date);
+    List<Note> findNotesByDietitianAndDateGreaterThanEqual(Dietitian dietitian, LocalDate due_date);
 }

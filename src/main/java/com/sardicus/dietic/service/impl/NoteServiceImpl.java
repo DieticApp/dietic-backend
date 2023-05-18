@@ -36,7 +36,17 @@ public class NoteServiceImpl implements NoteService {
 
         return notes.stream().map(this::mapToDTO).collect(Collectors.toList());
     }
+    @Override
+    public List<NoteDto> getUpcomingNotes(Integer dietitianId) {
+        Dietitian dietitian = dietitianRepo.findById(dietitianId)
+                .orElseThrow(() -> new ResourceNotFoundException("Dietitian", "id:", dietitianId));
 
+        LocalDate today = LocalDate.now();
+
+        List<Note> upcomingNotes = noteRepo.findNotesByDietitianAndDateGreaterThanEqual(dietitian, today);
+
+        return upcomingNotes.stream().map(this::mapToDTO).collect(Collectors.toList());
+    }
     @Override
     public NoteDto saveNote(Integer dietitianId, NoteDto noteDto) {
         Note note = mapToEntity(noteDto);
