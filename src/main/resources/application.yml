@@ -13,5 +13,3 @@ spring:
         format_sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
-server:
-  port: 5000

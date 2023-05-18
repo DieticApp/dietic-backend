@@ -26,7 +26,6 @@ public class PatientController {
     private final DietitianRepo dietitianRepo;
     private final PatientRepo patientRepo;
     private final PatientService patientService;
-    private final FoodService foodService;
     private final UserRepo userRepo;
     private final StepService stepService;
 

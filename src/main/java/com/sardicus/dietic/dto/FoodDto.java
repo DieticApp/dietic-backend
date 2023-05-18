@@ -12,7 +12,7 @@ public class FoodDto {
     private String description;
     private Double protein;
     private Double fat;
-    private Double carb;
+    private Double carbohydrate;
     private Integer energy;
 
 

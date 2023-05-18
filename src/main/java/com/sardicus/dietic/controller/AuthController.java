@@ -21,7 +21,6 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final MessageService messageService;
     private final AuthService authService;
 
     @PostMapping("/login")
