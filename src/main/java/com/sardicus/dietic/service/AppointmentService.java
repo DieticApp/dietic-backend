@@ -1,14 +1,14 @@
 package com.sardicus.dietic.service;
 
 import com.sardicus.dietic.dto.AppointmentDto;
-import com.sardicus.dietic.entity.Appointment;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public interface AppointmentService {
     AppointmentDto getAppointmentById(Long appointmentId);
+   Map<Integer, Integer> getAppointmentCountsByYear(Integer dietitianId);
 
     List<AppointmentDto> getAppointmentsByDietitianId(Integer dietitianId);
     List<AppointmentDto> getAppointmentsByDietitianIdAndDate(Integer dietitianId , LocalDate date);

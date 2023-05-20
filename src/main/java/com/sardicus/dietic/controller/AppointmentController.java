@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
@@ -38,6 +39,13 @@ public class AppointmentController {
             element.setPatientName(patientRepo.findById(element.getPatient_id()).get().getName() +" "+ patientRepo.findById(element.getPatient_id()).get().getSurname());
         }
         return appointmentDto;
+    }
+
+    @GetMapping("/appointmentCount")
+    ResponseEntity<Map<Integer, Integer>> getAppointmentCount(@AuthenticationPrincipal UserDetails dietitian) {
+        Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
+        Map<Integer, Integer> appointmentCountsByMonth = appointmentService.getAppointmentCountsByYear(dietitianId);
+        return ResponseEntity.ok(appointmentCountsByMonth);
     }
     @PostMapping("/dietitian/byDate/{dietitianId}")
     List<AppointmentDto> getAppointmentsByDietitianIdAndDate(@PathVariable Integer dietitianId ,@RequestBody AppointmentDto appointmentDto ) {

@@ -16,8 +16,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
+import java.time.Year;
+import java.time.YearMonth;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +31,29 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 
     private final ModelMapper mapper;
+    @Override
+    public Map<Integer, Integer> getAppointmentCountsByYear(Integer dietitianId) {
+        int appointmentCount = 0;
+        Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
+                () -> new ResourceNotFoundException("Dietitian", "id", dietitianId));
+        int currentYear = Year.now().getValue();
+
+        Map<Integer, Integer> appointmentCountsByMonth = new HashMap<>();
+
+        for (int month = 1; month <= 12; month++) {
+            YearMonth yearMonth = YearMonth.of(currentYear, month);
+            LocalDate startDate = yearMonth.atDay(1);
+            LocalDate endDate = yearMonth.atEndOfMonth();
+
+            appointmentCount = appointmentRepo
+                    .findAllByAppointmentDateBetweenAndDietitian(startDate, endDate, dietitian)
+                    .size();
+            appointmentCountsByMonth.put(month, appointmentCount);
+        }
+
+        return appointmentCountsByMonth;
+    }
+
 
 
     @Override

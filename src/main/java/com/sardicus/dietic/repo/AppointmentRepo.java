@@ -13,9 +13,7 @@ import java.util.List;
 
 @Repository
 public interface AppointmentRepo extends JpaRepository<Appointment, Long> {
-
-
-    List<Appointment> findAppointmentsByPatient(Patient patient);
+  List<Appointment> findAllByAppointmentDateBetweenAndDietitian(LocalDate startDate, LocalDate endDate, Dietitian dietitian);
     List<Appointment> findAppointmentsByStatusAndDietitian(AppointmentStatus status , Dietitian dietitian);
     List<Appointment> findAppointmentsByStatusAndPatient(AppointmentStatus status , Patient patient);
     List<Appointment> findAppointmentsByStatusAndDietitianAndAppointmentDate(AppointmentStatus status , Dietitian dietitian ,

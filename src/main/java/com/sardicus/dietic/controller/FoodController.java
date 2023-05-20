@@ -18,7 +18,7 @@ public class FoodController {
     public ResponseEntity<List<FoodDto>> searchFoods(@RequestParam("query") String query){
         return ResponseEntity.ok(foodService.searchFoods(query,15));
     }
-    @PostMapping("/add")
+    @PostMapping("/addFood")
     public ResponseEntity<FoodDto> addFood(@RequestBody FoodDto foodDto){
         return ResponseEntity.ok(foodService.addFood(foodDto));
     }
