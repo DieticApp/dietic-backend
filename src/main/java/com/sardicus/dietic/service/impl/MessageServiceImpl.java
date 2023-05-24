@@ -1,32 +1,42 @@
 package com.sardicus.dietic.service.impl;
 
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.*;
+import com.google.cloud.Timestamp;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseToken;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
+import com.sardicus.dietic.dto.FirestoreDto;
+import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.MessageDto;
 import com.sardicus.dietic.dto.RoomDto;
-import com.sardicus.dietic.dto.LoginDto;
+import com.sardicus.dietic.repo.UserRepo;
+import com.sardicus.dietic.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Service
 @RequiredArgsConstructor
-public class MessageService {
+public class MessageServiceImpl implements MessageService {
     private final PasswordEncoder passwordEncoder;
+    private final UserRepo userRepo;
 
     Firestore db = FirestoreClient.getFirestore();
-    public String saveToUsers(LoginDto loginDto) throws ExecutionException, InterruptedException {
-        String encodePassword = passwordEncoder.encode(loginDto.getPassword());
-        loginDto.setPassword(encodePassword);
-        ApiFuture<WriteResult> api = db.collection("Users").document(loginDto.getEmail()).set(loginDto);
+    public String saveToUsers(FirestoreDto firestoreDto) throws ExecutionException, InterruptedException {
+        String pictureUrl = "https://firebasestorage.googleapis.com/v0/b/dietic-chat.appspot.com/o/user.png?alt=media&token=d2ffc257-90bc-41d6-8c4d-cd7d655ed4a5";
+        Timestamp timestamp = Timestamp.now();
+        String encodePassword = passwordEncoder.encode(firestoreDto.getPassword());
+        firestoreDto.setPassword(encodePassword);
+        firestoreDto.setDate_time(timestamp);
+        firestoreDto.setProfile_pic(pictureUrl);
+
+       db.collection("Users").document(firestoreDto.getEmail()).set(firestoreDto);
+
        return "User added to firestore";
     }
     public void changePassword(String email, String newPassword) throws FirebaseAuthException {
@@ -51,18 +61,19 @@ public class MessageService {
         DocumentReference messageRef = roomRef.collection("messages").document();
         batch.set(messageRef, messageDto);
 
-        ApiFuture<List<WriteResult>> future = batch.commit();
+         batch.commit();
 
     }
     public void registerInFirebase(LoginDto loginDto) throws FirebaseAuthException {
+
         FirebaseAuth auth = FirebaseAuth.getInstance();
         UserRecord.CreateRequest request = new UserRecord.CreateRequest()
                 .setEmail(loginDto.getEmail())
                 .setPassword(loginDto.getPassword())
                 .setUid(loginDto.getEmail())
                 .setDisabled(false);
-        UserRecord userRecord = auth.createUser(request);
 
+        auth.createUser(request);
 
     }
 

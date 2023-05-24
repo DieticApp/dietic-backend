@@ -5,7 +5,6 @@ import com.sardicus.dietic.dto.LoginDto;
 import com.sardicus.dietic.dto.RegisterDto;
 import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.service.AuthService;
-import com.sardicus.dietic.service.impl.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

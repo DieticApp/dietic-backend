@@ -1,20 +1,14 @@
 package com.sardicus.dietic.service.impl;
 
 import com.sardicus.dietic.dto.NoteDto;
-import com.sardicus.dietic.dto.PatientDto;
-import com.sardicus.dietic.dto.WeightDto;
 import com.sardicus.dietic.entity.Dietitian;
 import com.sardicus.dietic.entity.Note;
-import com.sardicus.dietic.entity.Patient;
-import com.sardicus.dietic.entity.Weight;
-import com.sardicus.dietic.exception.APIException;
 import com.sardicus.dietic.exception.ResourceNotFoundException;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.NoteRepo;
 import com.sardicus.dietic.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

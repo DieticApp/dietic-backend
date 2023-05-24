@@ -1,6 +1,5 @@
 package com.sardicus.dietic.service;
 
-import com.sardicus.dietic.dto.AppointmentDto;
 import com.sardicus.dietic.dto.DietPlanDto;
 
 import java.time.LocalDate;

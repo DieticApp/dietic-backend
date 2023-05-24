@@ -1,9 +1,8 @@
 package com.sardicus.dietic.service.impl;
 
-import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.dto.StepDto;
-import com.sardicus.dietic.dto.WeightDto;
-import com.sardicus.dietic.entity.*;
+import com.sardicus.dietic.entity.Patient;
+import com.sardicus.dietic.entity.Steps;
 import com.sardicus.dietic.exception.ResourceNotFoundException;
 import com.sardicus.dietic.repo.PatientRepo;
 import com.sardicus.dietic.repo.StepsRepo;

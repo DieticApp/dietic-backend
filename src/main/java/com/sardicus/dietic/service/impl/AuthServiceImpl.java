@@ -1,16 +1,14 @@
 package com.sardicus.dietic.service.impl;
 
 import com.google.firebase.auth.FirebaseAuthException;
-import com.sardicus.dietic.dto.LoginDto;
-import com.sardicus.dietic.dto.MessageDto;
-import com.sardicus.dietic.dto.RegisterDto;
-import com.sardicus.dietic.dto.RoomDto;
+import com.sardicus.dietic.dto.*;
 import com.sardicus.dietic.entity.*;
 import com.sardicus.dietic.exception.APIException;
 import com.sardicus.dietic.repo.*;
 import com.sardicus.dietic.response.JWTAuthResponse;
 import com.sardicus.dietic.security.JwtTokenProvider;
 import com.sardicus.dietic.service.AuthService;
+import com.sardicus.dietic.service.MessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -162,7 +160,12 @@ public class AuthServiceImpl implements AuthService {
         firebaseRegister.setName(registerDto.getName() + " " + registerDto.getSurname());
         messageService.registerInFirebase(firebaseRegister);
 
-        jwtAuthResponse.setFirebaseResponse(messageService.saveToUsers(firebaseRegister));
+        FirestoreDto firestoreDto = new FirestoreDto();
+        firestoreDto.setEmail(registerDto.getEmail());
+        firestoreDto.setPassword(registerDto.getPassword());
+        firestoreDto.setName(registerDto.getName() + " " + registerDto.getSurname());
+
+        jwtAuthResponse.setFirebaseResponse(messageService.saveToUsers(firestoreDto));
         jwtAuthResponse.setAccessToken(token);
         jwtAuthResponse.setName(registerDto.getName());
         jwtAuthResponse.setSurname(registerDto.getSurname());

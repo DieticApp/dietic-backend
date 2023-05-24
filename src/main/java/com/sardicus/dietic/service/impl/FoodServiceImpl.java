@@ -1,12 +1,7 @@
 package com.sardicus.dietic.service.impl;
 
 import com.sardicus.dietic.dto.FoodDto;
-import com.sardicus.dietic.dto.PatientDto;
-import com.sardicus.dietic.entity.Appointment;
-import com.sardicus.dietic.entity.Dietitian;
 import com.sardicus.dietic.entity.Food;
-import com.sardicus.dietic.entity.Patient;
-import com.sardicus.dietic.exception.ResourceNotFoundException;
 import com.sardicus.dietic.repo.FoodRepo;
 import com.sardicus.dietic.service.FoodService;
 import lombok.RequiredArgsConstructor;
