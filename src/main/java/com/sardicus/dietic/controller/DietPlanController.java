@@ -5,6 +5,8 @@ import com.sardicus.dietic.service.DietPlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -45,5 +47,15 @@ public class DietPlanController {
     public ResponseEntity<DietPlanDto> updateStatusOfDietPlan(@PathVariable Integer planId, @RequestBody DietPlanDto dietPlan) {
         DietPlanDto updatedDietPlan = dietPlanService.updateStatusOfFood(planId, dietPlan);
         return new ResponseEntity<>(updatedDietPlan, HttpStatus.OK);
+    }
+    @PostMapping("/deleteDay/{patientId}")
+    public ResponseEntity<String> deletePlanByDay(@PathVariable(value = "patientId") Integer patientId ,@RequestBody DietPlanDto dietPlanDto){
+        dietPlanService.deletePlanByPatientId( dietPlanDto.getDay() , patientId);
+        return new ResponseEntity<>("Diet plan deleted successfully" , HttpStatus.OK);
+    }
+    @DeleteMapping("/delete/{planId}")
+    public ResponseEntity<String> deleteFood(@PathVariable(value = "planId") Integer planId){
+        dietPlanService.deleteFood(planId);
+        return new ResponseEntity<>("Food deleted successfully" , HttpStatus.OK);
     }
 }

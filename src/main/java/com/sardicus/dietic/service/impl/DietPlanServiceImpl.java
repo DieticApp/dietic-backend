@@ -54,25 +54,32 @@ public class DietPlanServiceImpl implements DietPlanService {
     }
 
     @Override
-    public void deletePlanByPatientId(Integer dietitianId , Integer patientId) {
+    public void deletePlanByPatientId(LocalDate day , Integer patientId) {
+
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                () -> new ResourceNotFoundException("Patient", "id", patientId));
+
+        List<DietPlan> dietPlans = dietPlanRepo.findDietPlansByDayAndPatient(day,patient);
+
+        dietPlanRepo.deleteAll(dietPlans);
 
     }
 
     @Override
     public List<DietPlanDto> getPlanByPatientId(Integer patientId) {
-        List<DietPlan> dietPlans = dietPlanRepo.findDietPlansByPatientId(patientId);
+        Patient patient = patientRepo.findById(patientId).orElseThrow(
+                () -> new ResourceNotFoundException("Patient", "id", patientId));
+        List<DietPlan> dietPlans = dietPlanRepo.findDietPlansByPatient(patient);
         return dietPlans.stream().map(this::mapToDTO).collect(Collectors.toList());
 
     }
 
-    @Override
-    public void deletePlanByMeal(Integer patientId, LocalDate dayId, Integer mealId) {
-
-    }
-
 
     @Override
-    public void deleteFood(Integer dietitianId ,Integer patientId, Integer day, Integer meal , Integer food) {
+    public void deleteFood(Integer planId) {
+        DietPlan dietPlan = dietPlanRepo.findById(planId).orElseThrow(() ->
+                new ResourceNotFoundException("Plan", "id:", planId));
+        dietPlanRepo.delete(dietPlan);
 
     }
 
