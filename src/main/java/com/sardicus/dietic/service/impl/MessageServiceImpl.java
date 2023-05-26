@@ -3,15 +3,13 @@ package com.sardicus.dietic.service.impl;
 import com.google.cloud.Timestamp;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.WriteBatch;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.UserRecord;
 import com.google.firebase.cloud.FirestoreClient;
-import com.sardicus.dietic.dto.FirestoreDto;
-import com.sardicus.dietic.dto.LoginDto;
-import com.sardicus.dietic.dto.MessageDto;
-import com.sardicus.dietic.dto.RoomDto;
+import com.sardicus.dietic.dto.*;
 import com.sardicus.dietic.repo.UserRepo;
 import com.sardicus.dietic.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,6 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor
 public class MessageServiceImpl implements MessageService {
     private final PasswordEncoder passwordEncoder;
-    private final UserRepo userRepo;
 
     Firestore db = FirestoreClient.getFirestore();
     public String saveToUsers(FirestoreDto firestoreDto) throws ExecutionException, InterruptedException {
@@ -75,6 +72,28 @@ public class MessageServiceImpl implements MessageService {
 
         auth.createUser(request);
 
+    }
+
+    @Override
+    public void deletePatient(PatientDto patientDto) throws FirebaseAuthException {
+
+        DocumentReference userRef = db.collection("Users").document(patientDto.getEmail());
+        userRef.delete();
+
+        db.collection("Rooms")
+                .whereArrayContains("users", patientDto.getEmail())
+                .addSnapshotListener((value, error) -> {
+                    if (error != null) {
+                        return;
+                    }
+                    for (QueryDocumentSnapshot document : value) {
+                        document.getReference().delete();
+                    }
+                });
+
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        auth.deleteUser(patientDto.getEmail());
     }
 
 }

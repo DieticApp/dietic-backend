@@ -1,15 +1,16 @@
 package com.sardicus.dietic.service.impl;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.dto.WeightDto;
-import com.sardicus.dietic.entity.Dietitian;
-import com.sardicus.dietic.entity.Patient;
-import com.sardicus.dietic.entity.Weight;
+import com.sardicus.dietic.entity.*;
 import com.sardicus.dietic.exception.APIException;
 import com.sardicus.dietic.exception.ResourceNotFoundException;
 import com.sardicus.dietic.repo.DietitianRepo;
 import com.sardicus.dietic.repo.PatientRepo;
+import com.sardicus.dietic.repo.UserRepo;
 import com.sardicus.dietic.repo.WeightRepo;
+import com.sardicus.dietic.service.MessageService;
 import com.sardicus.dietic.service.PatientService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +29,8 @@ public class PatientServiceImpl implements PatientService {
     private final DietitianRepo dietitianRepo;
     private final ModelMapper mapper;
     private final WeightRepo weightRepo;
+    private final UserRepo userRepo;
+    private final MessageService messageService;
 
 
 
@@ -72,7 +76,7 @@ public class PatientServiceImpl implements PatientService {
         return weightList.stream().map(this::mapWeightToDTO).collect(Collectors.toList());
     }
 
-    public void deletePatient(int dietitianId , int patientId){
+    public void deletePatient(int dietitianId , int patientId) throws FirebaseAuthException {
 
         Dietitian dietitian = dietitianRepo.findById(dietitianId).orElseThrow(
                 () -> new ResourceNotFoundException("Dietitian", "id", dietitianId));
@@ -81,11 +85,20 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = patientRepo.findById(patientId).orElseThrow(() ->
                 new ResourceNotFoundException("Patient", "id", patientId));
 
-        if(!patient.getDietitian().getDietitian_id().equals(dietitian.getDietitian_id())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Comment does not belongs to post");
-        }
 
-        patientRepo.delete(patient);
+
+        if(!patient.getDietitian().getDietitian_id().equals(dietitian.getDietitian_id())){
+                throw new APIException(HttpStatus.BAD_REQUEST, "Dietitian does not work with this patient");
+        }
+        User user = userRepo.findByEmail(patient.getEmail()).orElseThrow(() ->
+                new ResourceNotFoundException("User", "id", patientId));
+        PatientDto patientDto = mapToDTO(patient);
+
+
+        userRepo.deleteById(user.getId());
+        patientRepo.deleteById(patient.getPatient_id());
+        messageService.deletePatient(patientDto);
+
     }
    public List<PatientDto> getPatientsByDietitianId(Integer dietitianId) {
         List<Patient> patients = patientRepo.findPatientsByDietitianId(dietitianId);

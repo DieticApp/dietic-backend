@@ -1,5 +1,6 @@
 package com.sardicus.dietic.controller;
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.sardicus.dietic.dto.PatientDto;
 import com.sardicus.dietic.dto.StepDto;
 import com.sardicus.dietic.dto.WeightDto;
@@ -78,9 +79,9 @@ public class PatientController {
 
     @DeleteMapping("/delete/{patientId}")
     public ResponseEntity<String> deletePatient(@AuthenticationPrincipal UserDetails dietitian,
-                                                @PathVariable(value = "patientId") Integer patientId){
+                                                @PathVariable(value = "patientId") Integer patientId) throws FirebaseAuthException {
         Integer dietitianId = dietitianRepo.findByEmail(dietitian.getUsername()).get().getDietitian_id();
         patientService.deletePatient(dietitianId, patientId);
-        return new ResponseEntity<>("Employee deleted successfully" , HttpStatus.OK);
+        return new ResponseEntity<>("Patient deleted successfully" , HttpStatus.OK);
     }
 }
